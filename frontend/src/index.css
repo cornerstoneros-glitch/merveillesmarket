@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  /* Couleurs de marque - communes */
+  --color-green-dark: #143C1A;     /* vert forêt profond */
+  --color-green-mid: #1F5B2E;      /* vert intermédiaire */
+  --color-gold: #BE8943;           /* or / moutarde */
+  --color-gold-light: #D8B98A;     /* or clair */
+  --color-cream: #F4F4F0;          /* ivoire / blanc cassé */
+  --color-ink: #222222;            /* texte courant */
+  --color-white: #FFFFFF;
+
+  /* Nuances utilitaires dérivées */
+  --color-green-tint: #EAF0E6;     /* fond léger vert */
+  --color-gold-tint: #F6EEDF;      /* fond léger or */
+  --color-border: #E3DCC9;         /* bordures neutres */
+  --color-text-muted: #6B6B6B;     /* texte secondaire */
+  --color-success: #2E7D32;
+  --color-warning: #B45309;
+  --color-error: #B3261E;
+
+  /* Typographie */
+  --font-heading: "Playfair Display", "Georgia", serif;
+  --font-body: "Lato", "Calibri", "Open Sans", sans-serif;
+
+  --fs-brand: 2.5rem;      
+  --fs-h1: 2rem;
+  --fs-h2: 1.5rem;
+  --fs-h3: 1.25rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-caption: 0.75rem;
+
+  --lh-body: 1.6;
+  --ls-brand: 0.05em;      
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-ink);
+  background-color: var(--color-cream);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  color: var(--color-green-dark);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+}
+
+h3 {
+  font-family: var(--font-body);
+  font-size: var(--fs-h3);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Boutons communs */
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-white);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary:hover {
+  background: var(--color-green-mid);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-green-dark);
+  border: 1.5px solid var(--color-green-dark);
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-secondary:hover {
+  background: var(--color-green-dark);
+  color: var(--color-white);
+}
+
+/* Utilitaires layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section {
+  padding: 4rem 0;
+}

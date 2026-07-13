@@ -1,0 +1,137 @@
+.product-detail-page {
+  padding-top: 2rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-muted);
+  margin-bottom: 2rem;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: var(--color-green-dark);
+}
+
+.product-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  background-color: var(--color-white);
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.product-detail-image img {
+  width: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.product-detail-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-category {
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-title {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  color: var(--color-ink);
+}
+
+.product-price-large {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+}
+
+.text-abbeys {
+  color: var(--color-green-dark);
+}
+
+.text-josy {
+  color: var(--color-gold);
+}
+
+.product-description {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.product-warning {
+  display: flex;
+  gap: 1rem;
+  background-color: #FFF4E5;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  color: var(--color-warning);
+  border-left: 4px solid var(--color-warning);
+}
+
+.warning-icon {
+  flex-shrink: 0;
+}
+
+.add-to-cart-section {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: auto;
+}
+
+.quantity-selector {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.quantity-selector button {
+  background: none;
+  border: none;
+  padding: 0.75rem 1rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.quantity-selector button:hover {
+  background-color: var(--color-cream);
+}
+
+.quantity-selector span {
+  padding: 0 1rem;
+  font-weight: 700;
+}
+
+.btn-add-cart {
+  flex: 1;
+}
+
+.btn-abbeys {
+  background-color: var(--color-green-dark);
+}
+
+.btn-josy {
+  background-color: var(--color-gold);
+}
+
+@media (max-width: 768px) {
+  .product-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

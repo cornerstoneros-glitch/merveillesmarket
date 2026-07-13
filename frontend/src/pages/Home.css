@@ -1,0 +1,205 @@
+.home-page {
+  width: 100%;
+}
+
+.hero {
+  background-color: var(--color-green-dark);
+  color: var(--color-white);
+  padding: 8rem 0 6rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.hero-slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+}
+
+.hero-slide.active {
+  opacity: 1;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(20, 60, 26, 0.85) 0%, rgba(20, 60, 26, 0.4) 100%);
+}
+
+.hero-content {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.hero-content h1 {
+  color: var(--color-white);
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.25rem;
+  opacity: 0.95;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.hero-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-card {
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.hero-card:hover {
+  transform: translateY(-10px);
+}
+
+.hero-card-content {
+  position: relative;
+  z-index: 2;
+  padding: 2rem;
+}
+
+.hero-card h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-card p {
+  margin-bottom: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+}
+
+.abbeys-card {
+  background-color: var(--color-green-tint);
+  color: var(--color-green-dark);
+  border: 1px solid rgba(20, 60, 26, 0.1);
+}
+
+.abbeys-card h2 {
+  color: var(--color-green-dark);
+}
+
+.abbeys-card .btn-secondary {
+  border-color: var(--color-green-dark);
+  color: var(--color-green-dark);
+}
+
+.abbeys-card .btn-secondary:hover {
+  background-color: var(--color-green-dark);
+  color: var(--color-white);
+}
+
+.josy-card {
+  background-color: var(--color-gold-tint);
+  color: var(--color-ink);
+  border: 1px solid rgba(190, 137, 67, 0.2);
+}
+
+.josy-card h2 {
+  color: var(--color-gold);
+}
+
+.universe-section {
+  padding: 5rem 0;
+}
+
+.abbeys-section {
+  background-color: var(--color-white);
+}
+
+.josy-section {
+  background-color: var(--color-cream);
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+}
+
+.section-subtitle {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.abbeys-section .section-subtitle {
+  color: var(--color-green-mid);
+}
+
+.josy-section .section-subtitle {
+  color: var(--color-gold);
+}
+
+.see-all-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  transition: opacity 0.2s;
+}
+
+.see-all-link:hover {
+  opacity: 0.7;
+}
+
+.abbeys-section .see-all-link {
+  color: var(--color-green-dark);
+}
+
+.josy-section .see-all-link {
+  color: var(--color-gold);
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 768px) {
+  .hero-split {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+}
