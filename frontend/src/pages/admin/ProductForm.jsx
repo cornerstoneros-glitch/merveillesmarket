@@ -45,7 +45,7 @@ const ProductForm = ({ product, onClose, token }) => {
         body: data
       });
 
-      if (!res.ok) throw new Error('Erreur lors de l\\'upload');
+      if (!res.ok) throw new Error("Erreur lors de l'upload");
       
       const result = await res.json();
       
