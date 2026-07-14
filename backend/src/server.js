@@ -47,6 +47,32 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+async function autoMigrate() {
+  try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "Coupon" (
+          "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+          "code" TEXT NOT NULL,
+          "discountType" TEXT NOT NULL,
+          "discountValue" REAL NOT NULL,
+          "isActive" BOOLEAN NOT NULL DEFAULT 1,
+          "usageLimit" INTEGER,
+          "usageCount" INTEGER NOT NULL DEFAULT 0,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+    try { await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX "Coupon_code_key" ON "Coupon"("code");`); } catch (e) {}
+    try { await prisma.$executeRawUnsafe(`ALTER TABLE "Order" ADD COLUMN "couponCode" TEXT;`); } catch (e) {}
+    try { await prisma.$executeRawUnsafe(`ALTER TABLE "Order" ADD COLUMN "discountAmount" REAL NOT NULL DEFAULT 0;`); } catch (e) {}
+    console.log("Auto-migration de la base de données vérifiée.");
+  } catch (error) {
+    console.error("Erreur lors de l'auto-migration:", error);
+  }
+}
+
+autoMigrate().then(() => {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 });
