@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Facebook } from 'lucide-react';
+import { Mail, Phone, MapPin, Share2 } from 'lucide-react';
 import './Footer.css';
 
 const Footer = () => {
@@ -16,10 +16,10 @@ const Footer = () => {
           </p>
           <div className="footer-socials" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <a href="https://www.facebook.com/MerveillesAbbey" target="_blank" rel="noopener noreferrer" aria-label="Facebook Merveilles Abbey" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Facebook size={20} /> Merveilles Abbey
+              <Share2 size={20} /> Merveilles Abbey
             </a>
             <a href="https://www.facebook.com/JosyMarket01/" target="_blank" rel="noopener noreferrer" aria-label="Facebook Josy Market" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Facebook size={20} /> Josy Market
+              <Share2 size={20} /> Josy Market
             </a>
           </div>
         </div>
