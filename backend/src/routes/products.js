@@ -4,13 +4,27 @@ import prisma from '../prismaClient.js';
 
 const router = express.Router();
 
+// Helper pour parser les images
+const parseImages = (product) => {
+  if (product.images) {
+    try {
+      product.images = JSON.parse(product.images);
+    } catch (e) {
+      product.images = [];
+    }
+  } else {
+    product.images = [];
+  }
+  return product;
+};
+
 // Récupérer tous les produits (Public)
 router.get('/', async (req, res) => {
   try {
     const products = await prisma.product.findMany({
       orderBy: { createdAt: 'desc' }
     });
-    res.json(products);
+    res.json(products.map(parseImages));
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({ error: "Failed to fetch products" });
@@ -25,7 +39,7 @@ router.get('/:id', async (req, res) => {
       where: { id: parseInt(id) },
     });
     if (product) {
-      res.json(product);
+      res.json(parseImages(product));
     } else {
       res.status(404).json({ error: "Product not found" });
     }
@@ -37,7 +51,12 @@ router.get('/:id', async (req, res) => {
 // ADMIN: Créer un produit
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { name, price, category, universe, image, description, warnings, isNew, promo } = req.body;
+    const { name, price, category, universe, image, images, description, warnings, isNew, promo } = req.body;
+    
+    let imagesString = null;
+    if (Array.isArray(images)) {
+      imagesString = JSON.stringify(images);
+    }
     
     const product = await prisma.product.create({
       data: {
@@ -46,13 +65,14 @@ router.post('/', adminAuth, async (req, res) => {
         category,
         universe,
         image: image || '/images/products/placeholder.png',
+        images: imagesString,
         description,
         warnings: warnings || null,
         isNew: isNew || false,
         promo: promo || false
       }
     });
-    res.status(201).json(product);
+    res.status(201).json(parseImages(product));
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({ error: "Failed to create product" });
@@ -62,7 +82,12 @@ router.post('/', adminAuth, async (req, res) => {
 // ADMIN: Mettre à jour un produit
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { name, price, category, universe, image, description, warnings, isNew, promo } = req.body;
+    const { name, price, category, universe, image, images, description, warnings, isNew, promo } = req.body;
+    
+    let imagesString = undefined;
+    if (images !== undefined) {
+      imagesString = Array.isArray(images) ? JSON.stringify(images) : null;
+    }
     
     const product = await prisma.product.update({
       where: { id: parseInt(req.params.id) },
@@ -72,13 +97,14 @@ router.put('/:id', adminAuth, async (req, res) => {
         category,
         universe,
         image,
+        images: imagesString,
         description,
         warnings,
         isNew,
         promo
       }
     });
-    res.json(product);
+    res.json(parseImages(product));
   } catch (error) {
     console.error("Error updating product:", error);
     res.status(500).json({ error: "Failed to update product" });

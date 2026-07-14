@@ -13,6 +13,7 @@ model Product {
   category    String
   universe    String   // 'abbeys' or 'josy'
   image       String
+  images      String?  // JSON stringified array of secondary images
   description String
   warnings    String?
   isNew       Boolean  @default(false)

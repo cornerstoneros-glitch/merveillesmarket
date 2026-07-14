@@ -10,17 +10,27 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [mainImage, setMainImage] = useState('');
+  const [zoomStyle, setZoomStyle] = useState({ transformOrigin: 'center center' });
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
     fetchProductById(id).then(data => {
       setProduct(data);
+      setMainImage(data.image);
       setLoading(false);
     }).catch(err => {
       console.error(err);
       setLoading(false);
     });
   }, [id]);
+
+  const handleMouseMove = (e) => {
+    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - left) / width) * 100;
+    const y = ((e.clientY - top) / height) * 100;
+    setZoomStyle({ transformOrigin: `${x}% ${y}%` });
+  };
 
   if (loading) {
     return <div className="container section"><p style={{ textAlign: 'center' }}>Chargement...</p></div>;
@@ -39,8 +49,36 @@ const ProductDetail = () => {
       </Link>
       
       <div className="product-detail-grid">
-        <div className="product-detail-image">
-          <img src={product.image} alt={product.name} />
+        <div className="product-gallery">
+          <div 
+            className="main-image-container" 
+            onMouseMove={handleMouseMove}
+          >
+            <img src={mainImage} alt={product.name} style={zoomStyle} className="zoomable-image" />
+          </div>
+          
+          {product.images && product.images.length > 0 && (
+            <div className="thumbnails-container">
+              {/* Image principale comme miniature */}
+              <div 
+                className={`thumbnail ${mainImage === product.image ? 'active' : ''}`}
+                onClick={() => setMainImage(product.image)}
+              >
+                <img src={product.image} alt={product.name} />
+              </div>
+              
+              {/* Images secondaires */}
+              {product.images.map((imgUrl, index) => (
+                <div 
+                  key={index}
+                  className={`thumbnail ${mainImage === imgUrl ? 'active' : ''}`}
+                  onClick={() => setMainImage(imgUrl)}
+                >
+                  <img src={imgUrl} alt={`${product.name} ${index + 1}`} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         
         <div className="product-detail-info">

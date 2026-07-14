@@ -10,7 +10,8 @@ const ProductForm = ({ product, onClose, token }) => {
     price: product?.price || '',
     category: product?.category || 'Soin',
     universe: product?.universe || 'abbeys',
-    image: product?.image || '/images/products/placeholder.png',
+    image: product?.image || '',
+    images: product?.images || [],
     description: product?.description || '',
     warnings: product?.warnings || '',
     isNew: product?.isNew || false,
@@ -23,6 +24,57 @@ const ProductForm = ({ product, onClose, token }) => {
       ...formData,
       [name]: type === 'checkbox' ? checked : value
     });
+  };
+
+  const handleFileUpload = async (e) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const data = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      data.append('images', files[i]);
+    }
+
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: data
+      });
+
+      if (!res.ok) throw new Error('Erreur lors de l\\'upload');
+      
+      const result = await res.json();
+      
+      // Mettre à jour l'état
+      setFormData(prev => {
+        const newImages = [...prev.images, ...result.urls];
+        return {
+          ...prev,
+          images: newImages,
+          image: prev.image || result.urls[0] // Définir comme principale si vide
+        };
+      });
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const setMainImage = (url) => {
+    setFormData({ ...formData, image: url });
+  };
+
+  const removeImage = (url) => {
+    setFormData(prev => ({
+      ...prev,
+      images: prev.images.filter(img => img !== url),
+      image: prev.image === url ? (prev.images.find(img => img !== url) || '') : prev.image
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -78,9 +130,25 @@ const ProductForm = ({ product, onClose, token }) => {
             <input name="category" value={formData.category} onChange={handleChange} required style={inputStyle} />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <label style={{ fontWeight: '500' }}>Lien de l'image (URL)</label>
-            <input name="image" value={formData.image} onChange={handleChange} placeholder="/images/products/votre-image.png" style={inputStyle} />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>
+            <label style={{ fontWeight: '500' }}>Images du produit (La première sera l'image principale)</label>
+            <input type="file" multiple accept="image/*" onChange={handleFileUpload} disabled={isLoading} style={inputStyle} />
+            
+            {formData.images && formData.images.length > 0 && (
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '1rem' }}>
+                {formData.images.map((url, index) => (
+                  <div key={index} style={{ position: 'relative', border: formData.image === url ? '3px solid var(--color-primary)' : '1px solid #ccc', borderRadius: '8px', overflow: 'hidden' }}>
+                    <img src={url} alt={`Preview ${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover', display: 'block' }} />
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '0.25rem', backgroundColor: 'rgba(0,0,0,0.4)', opacity: 0, transition: 'opacity 0.2s' }} onMouseEnter={e => e.currentTarget.style.opacity=1} onMouseLeave={e => e.currentTarget.style.opacity=0}>
+                      <button type="button" onClick={() => removeImage(url)} style={{ alignSelf: 'flex-end', background: '#ef4444', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', padding: '0.2rem 0.4rem', fontSize: '0.8rem' }}>X</button>
+                      {formData.image !== url && (
+                        <button type="button" onClick={() => setMainImage(url)} style={{ background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', padding: '0.2rem', fontSize: '0.7rem' }}>Principale</button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', gridColumn: '1 / -1' }}>

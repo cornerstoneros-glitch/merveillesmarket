@@ -16,6 +16,7 @@ app.use(express.json());
 import ordersRouter from './routes/orders.js';
 import authRouter from './routes/auth.js';
 import productsRouter from './routes/products.js';
+import uploadRouter from './routes/upload.js';
 
 app.get('/api/ping', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is alive' });
@@ -24,6 +25,10 @@ app.get('/api/ping', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
 app.use('/api/orders', ordersRouter);
+app.use('/api/upload', uploadRouter);
+
+// Servir le dossier uploads pour les images
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 // Servir les fichiers statiques du frontend (dossier dist après le build)
 const frontendPath = path.join(__dirname, '../../frontend/dist');
