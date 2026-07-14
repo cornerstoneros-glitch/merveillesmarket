@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import { formatPrice, fetchSettings } from '../api';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [shippingFee, setShippingFee] = useState(0);
 
@@ -92,7 +94,7 @@ const Cart = () => {
             <span>{formatPrice(getCartTotal())}</span>
           </div>
           <button 
-            onClick={() => navigate('/checkout')} 
+            onClick={() => navigate(user ? '/checkout' : '/login', { state: { from: { pathname: '/checkout' } } })} 
             className="btn-primary" 
             style={{ width: '100%', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}
           >

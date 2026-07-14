@@ -1,16 +1,19 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import { formatPrice, createOrder, validateCoupon } from '../api';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [formData, setFormData] = useState({
-    guestName: '',
-    guestEmail: '',
+    guestName: user?.name || '',
+    guestEmail: user?.email || '',
     guestPhone: '',
     guestLocation: 'abidjan',
     guestAddress: ''
@@ -58,9 +61,12 @@ const Checkout = () => {
     }
   }, [formData.guestLocation]);
 
+  if (!user) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
   if (cartItems.length === 0 && !success) {
-    navigate('/cart');
-    return null;
+    return <Navigate to="/cart" replace />;
   }
 
   const handleInputChange = (e) => {
@@ -107,6 +113,7 @@ const Checkout = () => {
 
       const orderData = {
         ...formData,
+        userId: user.id,
         guestAddress: fullAddress,
         items: cartItems,
         total: finalTotal,
@@ -131,9 +138,12 @@ const Checkout = () => {
         <CheckCircle size={64} style={{ color: 'var(--color-green)', marginBottom: '2rem' }} />
         <h1 style={{ marginBottom: '1rem', textAlign: 'center' }}>Commande confirmée !</h1>
         <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px' }}>
-          Merci pour votre commande. Nous avons bien reçu vos informations et procéderons à l'expédition très prochainement.
+          Merci pour votre commande, {user.name || user.email}. Nous avons bien reçu vos informations et procéderons à l'expédition très prochainement.
         </p>
-        <Link to="/" className="btn-primary">Retour à l'accueil</Link>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <Link to="/account" className="btn-secondary">Voir mes commandes</Link>
+          <Link to="/" className="btn-primary">Retour à l'accueil</Link>
+        </div>
       </div>
     );
   }
