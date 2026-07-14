@@ -45,9 +45,23 @@ model Order {
   items       String   // JSON stringified array of items
   total       Float
   shippingFee Float    @default(0)
+  couponCode  String?
+  discountAmount Float @default(0)
   status    String   @default("PENDING") // PENDING, PAID, SHIPPED, DELIVERED
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Coupon {
+  id            Int      @id @default(autoincrement())
+  code          String   @unique
+  discountType  String   // "PERCENTAGE" or "FIXED"
+  discountValue Float
+  isActive      Boolean  @default(true)
+  usageLimit    Int?     // null means unlimited
+  usageCount    Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Setting {

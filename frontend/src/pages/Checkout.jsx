@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
-import { formatPrice, createOrder, fetchSettings } from '../api';
+import { formatPrice, createOrder, validateCoupon } from '../api';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useContext(CartContext);
@@ -19,6 +19,27 @@ const Checkout = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [shippingFee, setShippingFee] = useState(1500);
+
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const subtotal = getCartTotal();
+  
+  const getDiscountAmount = () => {
+    if (!appliedCoupon) return 0;
+    let amount = 0;
+    if (appliedCoupon.discountType === 'PERCENTAGE') {
+      amount = subtotal * (appliedCoupon.discountValue / 100);
+    } else if (appliedCoupon.discountType === 'FIXED') {
+      amount = appliedCoupon.discountValue;
+    }
+    return Math.min(amount, subtotal); // La réduction ne peut pas dépasser le sous-total
+  };
+
+  const discountAmount = getDiscountAmount();
+  const finalTotal = subtotal - discountAmount + shippingFee;
 
   useEffect(() => {
     // Calcul automatique des frais de livraison
@@ -47,6 +68,29 @@ const Checkout = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleApplyCoupon = async (e) => {
+    e.preventDefault();
+    if (!couponInput) return;
+    
+    setCouponLoading(true);
+    setCouponError(null);
+    try {
+      const data = await validateCoupon(couponInput);
+      setAppliedCoupon(data);
+      setCouponInput('');
+    } catch (err) {
+      setCouponError(err.message);
+      setAppliedCoupon(null);
+    } finally {
+      setCouponLoading(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError(null);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -65,8 +109,9 @@ const Checkout = () => {
         ...formData,
         guestAddress: fullAddress,
         items: cartItems,
-        total: getCartTotal() + shippingFee,
-        shippingFee
+        total: finalTotal,
+        shippingFee,
+        couponCode: appliedCoupon ? appliedCoupon.code : null
       };
       
       await createOrder(orderData);
@@ -210,17 +255,54 @@ const Checkout = () => {
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <span>Sous-total</span>
-            <span>{formatPrice(getCartTotal())}</span>
+            <span>{formatPrice(subtotal)}</span>
           </div>
+
+          {appliedCoupon && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: 'var(--color-green-dark)', backgroundColor: 'var(--color-green-tint)', padding: '0.5rem', borderRadius: '4px' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                Réduction ({appliedCoupon.code})
+                <button type="button" onClick={removeCoupon} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#b91c1c', fontSize: '0.8rem', textDecoration: 'underline' }}>
+                  Retirer
+                </button>
+              </span>
+              <span>-{formatPrice(discountAmount)}</span>
+            </div>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>
             <span>Frais de livraison</span>
             <span style={{ color: shippingFee === 0 ? 'var(--color-green)' : 'inherit' }}>
               {shippingFee === 0 ? 'Gratuit' : formatPrice(shippingFee)}
             </span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '1.25rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '1.25rem', marginBottom: '1.5rem' }}>
             <span>Total</span>
-            <span>{formatPrice(getCartTotal() + shippingFee)}</span>
+            <span>{formatPrice(finalTotal)}</span>
+          </div>
+
+          {/* Zone Code Promo */}
+          <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-bg-light)' }}>
+            <h4 style={{ marginBottom: '0.5rem', fontSize: '0.95rem' }}>Avez-vous un code promo ?</h4>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <input 
+                type="text" 
+                value={couponInput}
+                onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                placeholder="Ex: PROMO2026"
+                style={{ flex: 1, padding: '0.5rem 0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', textTransform: 'uppercase' }}
+                disabled={appliedCoupon !== null}
+              />
+              <button 
+                type="button" 
+                onClick={handleApplyCoupon}
+                disabled={!couponInput || couponLoading || appliedCoupon !== null}
+                style={{ padding: '0.5rem 1rem', backgroundColor: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', opacity: (!couponInput || couponLoading || appliedCoupon !== null) ? 0.7 : 1 }}
+              >
+                {couponLoading ? '...' : 'Appliquer'}
+              </button>
+            </div>
+            {couponError && <p style={{ color: '#b91c1c', fontSize: '0.85rem', marginTop: '0.5rem' }}>{couponError}</p>}
           </div>
         </div>
       </div>

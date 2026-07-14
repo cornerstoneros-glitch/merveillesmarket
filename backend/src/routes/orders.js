@@ -7,7 +7,7 @@ const router = express.Router();
 // Créer une commande
 router.post('/', async (req, res) => {
   try {
-    const { items, total, shippingFee, guestName, guestEmail, guestPhone, guestAddress, userId } = req.body;
+    const { items, total, shippingFee, guestName, guestEmail, guestPhone, guestAddress, userId, couponCode } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Le panier est vide' });
@@ -15,6 +15,39 @@ router.post('/', async (req, res) => {
 
     // Utilisation d'une transaction pour vérifier et mettre à jour le stock
     const order = await prisma.$transaction(async (tx) => {
+      let finalDiscountAmount = 0;
+      let appliedCouponCode = null;
+
+      // Vérification du coupon côté serveur
+      if (couponCode) {
+        const coupon = await tx.coupon.findUnique({
+          where: { code: couponCode.toUpperCase() }
+        });
+
+        if (coupon && coupon.isActive && (coupon.usageLimit === null || coupon.usageCount < coupon.usageLimit)) {
+          // Calculer le sous-total des articles
+          const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+          
+          if (coupon.discountType === 'PERCENTAGE') {
+            finalDiscountAmount = subtotal * (coupon.discountValue / 100);
+          } else if (coupon.discountType === 'FIXED') {
+            finalDiscountAmount = coupon.discountValue;
+          }
+          
+          if (finalDiscountAmount > subtotal) {
+            finalDiscountAmount = subtotal; // Le discount ne peut pas excéder le sous-total
+          }
+
+          appliedCouponCode = coupon.code;
+
+          // Mettre à jour le compteur d'utilisation
+          await tx.coupon.update({
+            where: { id: coupon.id },
+            data: { usageCount: coupon.usageCount + 1 }
+          });
+        }
+      }
+
       // 1. Vérifier le stock pour chaque article
       for (const item of items) {
         const product = await tx.product.findUnique({
@@ -36,12 +69,18 @@ router.post('/', async (req, res) => {
         });
       }
 
+      // Calculer le total final (pour s'assurer qu'il correspond)
+      const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+      const computedTotal = subtotal + (shippingFee || 0) - finalDiscountAmount;
+
       // 3. Créer la commande
       return await tx.order.create({
         data: {
           items: JSON.stringify(items),
-          total,
+          total: computedTotal,
           shippingFee: shippingFee || 0,
+          couponCode: appliedCouponCode,
+          discountAmount: finalDiscountAmount,
           userId: userId ? parseInt(userId) : null,
           guestName,
           guestEmail,
@@ -55,7 +94,6 @@ router.post('/', async (req, res) => {
     res.status(201).json(order);
   } catch (error) {
     console.error('Erreur lors de la création de la commande:', error);
-    // Renvoyer l'erreur spécifique du stock si c'est le cas
     res.status(400).json({ error: error.message || 'Erreur serveur lors de la création de la commande' });
   }
 });

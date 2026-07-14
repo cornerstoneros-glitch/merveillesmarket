@@ -144,3 +144,54 @@ export const updateSetting = async (key, value, token) => {
   }
   return response.json();
 };
+
+// Coupons
+export const validateCoupon = async (code) => {
+  const response = await fetch(`${API_URL}/coupons/validate`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code })
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Code promo invalide');
+  }
+  return data;
+};
+
+export const fetchCoupons = async (token) => {
+  const response = await fetch(`${API_URL}/coupons`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!response.ok) {
+    throw new Error('Erreur lors de la récupération des coupons');
+  }
+  return response.json();
+};
+
+export const createCoupon = async (couponData, token) => {
+  const response = await fetch(`${API_URL}/coupons`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(couponData),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur lors de la création du coupon');
+  }
+  return data;
+};
+
+export const deleteCoupon = async (id, token) => {
+  const response = await fetch(`${API_URL}/coupons/${id}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!response.ok) {
+    throw new Error('Erreur lors de la suppression du coupon');
+  }
+  return response.json();
+};

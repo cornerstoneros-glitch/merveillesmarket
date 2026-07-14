@@ -104,6 +104,14 @@ const AdminOrders = () => {
                             dont livraison: {order.shippingFee.toLocaleString()} FCFA
                           </div>
                         )}
+                        {order.couponCode && (
+                          <div style={{ fontSize: '0.8rem', color: '#15803d', fontWeight: 'normal', marginTop: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span style={{ backgroundColor: '#dcfce7', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>
+                              {order.couponCode}
+                            </span>
+                            -{order.discountAmount.toLocaleString()} FCFA
+                          </div>
+                        )}
                       </td>
                       <td style={{ padding: '1rem 1.5rem' }}>
                         <span style={{ backgroundColor: statusColors.bg, color: statusColors.text, padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.85rem', fontWeight: '500' }}>
