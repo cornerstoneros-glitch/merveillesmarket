@@ -1,14 +1,25 @@
-import React, { useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Menu, Search, User } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
 import './Header.css';
 
 const Header = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { getCartCount } = useContext(CartContext);
+  const [searchQuery, setSearchQuery] = useState('');
+  
   const isAbbeys = location.pathname.includes('/abbeys');
   const isJosy = location.pathname.includes('/josy');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(''); // Optional: clear after search
+    }
+  };
 
   return (
     <header className="header">
@@ -31,12 +42,17 @@ const Header = () => {
           <img src="/images/main-logo.png" alt="Merveilles Trade Market" style={{ height: '60px', width: 'auto' }} />
         </Link>
         
-        <div className="search-bar">
-          <input type="text" placeholder="Rechercher un produit..." />
+        <form className="search-bar" onSubmit={handleSearch}>
+          <input 
+            type="text" 
+            placeholder="Rechercher un produit..." 
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <button type="submit" aria-label="Rechercher">
             <Search size={20} />
           </button>
-        </div>
+        </form>
         
         <div className="header-actions">
           <Link to="/account" className="action-btn" aria-label="Compte">

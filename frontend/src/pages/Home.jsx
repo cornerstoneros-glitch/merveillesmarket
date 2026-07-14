@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Truck, Clock } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../api';
 import './Home.css';
@@ -34,6 +34,9 @@ const Home = () => {
 
   const abbeysProducts = products.filter(p => p.universe === 'abbeys').slice(0, 3);
   const josyProducts = products.filter(p => p.universe === 'josy').slice(0, 3);
+  
+  // Nouveautés ou produits en promo pour la section "En Vedette"
+  const featuredProducts = products.filter(p => p.isNew || p.promo).slice(0, 4);
 
   return (
     <div className="home-page">
@@ -74,6 +77,52 @@ const Home = () => {
           </div>
         </div>
       </section>
+
+      {/* Avantages Banner */}
+      <section className="features-banner">
+        <div className="container features-grid">
+          <div className="feature-item">
+            <Truck size={32} className="feature-icon" />
+            <div>
+              <h3>Livraison Rapide</h3>
+              <p>Partout dans la région</p>
+            </div>
+          </div>
+          <div className="feature-item">
+            <ShieldCheck size={32} className="feature-icon" />
+            <div>
+              <h3>Paiement Sécurisé</h3>
+              <p>100% garanti et fiable</p>
+            </div>
+          </div>
+          <div className="feature-item">
+            <Clock size={32} className="feature-icon" />
+            <div>
+              <h3>Service Client</h3>
+              <p>À votre écoute 7j/7</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Section (Nouveautés & Promos) */}
+      {featuredProducts.length > 0 && (
+        <section className="section featured-section">
+          <div className="container">
+            <div className="section-header" style={{ justifyContent: 'center', textAlign: 'center', marginBottom: '3rem' }}>
+              <div>
+                <span className="section-subtitle" style={{ color: 'var(--color-primary)' }}>Découvrez nos</span>
+                <h2>Nouveautés & Offres Spéciales</h2>
+              </div>
+            </div>
+            <div className="products-grid">
+              {featuredProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Abbeys Section */}
       <section className="section universe-section abbeys-section">

@@ -13,6 +13,7 @@ import FAQ from './pages/FAQ';
 import Shipping from './pages/Shipping';
 import Terms from './pages/Terms';
 import Login from './pages/Login';
+import SearchResults from './pages/SearchResults';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminStats from './pages/admin/AdminStats';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -34,6 +35,7 @@ function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/search" element={<SearchResults />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/shipping" element={<Shipping />} />

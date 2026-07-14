@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ShoppingCart, ArrowLeft, AlertTriangle } from 'lucide-react';
-import { fetchProductById, formatPrice } from '../api';
+import { fetchProductById, fetchProducts, formatPrice } from '../api';
 import { CartContext } from '../context/CartContext';
+import ProductCard from '../components/ProductCard';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState('');
@@ -15,10 +17,20 @@ const ProductDetail = () => {
   const { addToCart } = useContext(CartContext);
 
   useEffect(() => {
+    setLoading(true);
     fetchProductById(id).then(data => {
       setProduct(data);
       setMainImage(data.image);
-      setLoading(false);
+      setQuantity(1); // Reset quantity on product change
+      
+      // Fetch related products
+      fetchProducts().then(allProducts => {
+        const related = allProducts
+          .filter(p => p.universe === data.universe && p.id !== data.id)
+          .slice(0, 4); // Take 4 products from the same universe
+        setRelatedProducts(related);
+        setLoading(false);
+      });
     }).catch(err => {
       console.error(err);
       setLoading(false);
@@ -132,6 +144,18 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+
+      {/* Related Products Section */}
+      {relatedProducts.length > 0 && (
+        <div style={{ marginTop: '5rem', borderTop: '1px solid var(--color-bg-light)', paddingTop: '3rem' }}>
+          <h2 style={{ marginBottom: '2rem', textAlign: 'center' }}>Vous aimerez aussi...</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
+            {relatedProducts.map(p => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
