@@ -6,7 +6,7 @@ const AdminStats = () => {
   const [orders, setOrders] = useState([]);
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const loadData = async () => {

@@ -8,7 +8,7 @@ const AdminProducts = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem('token');
 
   const loadProducts = async () => {
     setIsLoading(true);

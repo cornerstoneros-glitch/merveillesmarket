@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, ShoppingCart, Package, LogOut, Settings } from 'lucide-react';
+import { AuthContext } from '../../context/AuthContext';
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const token = localStorage.getItem('adminToken');
-  const user = JSON.parse(localStorage.getItem('adminUser') || '{}');
+  const { user, token, loading, logout } = useContext(AuthContext);
 
   useEffect(() => {
-    if (!token) {
-      navigate('/login');
+    if (!loading) {
+      if (!token || user?.role !== 'ADMIN') {
+        navigate('/login');
+      }
     }
-  }, [token, navigate]);
+  }, [token, user, loading, navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
+    logout();
     navigate('/login');
   };
 
@@ -70,11 +71,11 @@ const AdminLayout = () => {
         <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <div style={{ width: '40px', height: '40px', borderRadius: '50%', backgroundColor: 'var(--color-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-green-dark)', fontWeight: 'bold' }}>
-              {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
             </div>
             <div>
-              <div style={{ fontWeight: '500', fontSize: '0.9rem' }}>{user.name || 'Admin'}</div>
-              <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>{user.email}</div>
+              <div style={{ fontWeight: '500', fontSize: '0.9rem' }}>{user?.name || 'Admin'}</div>
+              <div style={{ fontSize: '0.75rem', opacity: 0.7 }}>{user?.email}</div>
             </div>
           </div>
           <button 

@@ -86,13 +86,23 @@ const Header = () => {
       </div>
       
       <nav className="header-nav">
-        <div className="container nav-container">
-          <Link to="/abbeys" className={`nav-universe ${isAbbeys ? 'active abbeys' : ''}`}>
-            Merveilles Abbeys (Santé)
-          </Link>
-          <Link to="/josy" className={`nav-universe ${isJosy ? 'active josy' : ''}`}>
-            Josy Market (Mode & Maison)
-          </Link>
+        <div className="container nav-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: '2rem' }}>
+            <Link to="/abbeys" className={`nav-universe ${isAbbeys ? 'active abbeys' : ''}`}>
+              Merveilles Abbeys (Santé)
+            </Link>
+            <Link to="/josy" className={`nav-universe ${isJosy ? 'active josy' : ''}`}>
+              Josy Market (Mode & Maison)
+            </Link>
+          </div>
+          
+          <div className="top-menu" style={{ display: 'flex', gap: '1.5rem', fontWeight: '500', fontSize: '0.95rem' }}>
+            <Link to="/" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>Accueil</Link>
+            <Link to="/abbeys" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>Boutique Santé</Link>
+            <Link to="/josy" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>Boutique Maison</Link>
+            <Link to="/faq" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>FAQ</Link>
+            <Link to="/contact" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>Contact</Link>
+          </div>
         </div>
       </nav>
     </header>

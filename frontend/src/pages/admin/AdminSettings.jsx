@@ -9,7 +9,7 @@ const AdminSettings = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState(null);
   
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const loadSettings = async () => {

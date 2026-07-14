@@ -192,4 +192,8 @@
   .nav-container {
     justify-content: space-between;
   }
+  
+  .top-menu {
+    display: none !important;
+  }
 }

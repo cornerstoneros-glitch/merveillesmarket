@@ -6,7 +6,7 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const token = localStorage.getItem('adminToken');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     loadOrders();
