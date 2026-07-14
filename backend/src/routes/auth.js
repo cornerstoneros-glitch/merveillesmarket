@@ -1,11 +1,9 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
+import prisma from '../prismaClient.js';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_SECRET || 'merveilles_secret_key_2026';
 
 router.post('/login', async (req, res) => {

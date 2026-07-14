@@ -1,10 +1,8 @@
 import express from 'express';
-import pkg from '@prisma/client';
 import { adminAuth } from '../middleware/auth.js';
-const { PrismaClient } = pkg;
+import prisma from '../prismaClient.js';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 // Récupérer tous les produits (Public)
 router.get('/', async (req, res) => {

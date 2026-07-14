@@ -3,9 +3,7 @@ import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pkg from '@prisma/client';
-const { PrismaClient } = pkg;
-
-const prisma = new PrismaClient();
+import prisma from './prismaClient.js';
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -18,6 +16,10 @@ app.use(express.json());
 import ordersRouter from './routes/orders.js';
 import authRouter from './routes/auth.js';
 import productsRouter from './routes/products.js';
+
+app.get('/api/ping', (req, res) => {
+  res.json({ status: 'ok', message: 'Backend is alive' });
+});
 
 app.use('/api/auth', authRouter);
 app.use('/api/products', productsRouter);
