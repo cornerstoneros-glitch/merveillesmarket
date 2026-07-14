@@ -120,3 +120,27 @@ export const updateOrderStatus = async (orderId, status, token) => {
 export const formatPrice = (price) => {
   return new Intl.NumberFormat('fr-CI', { style: 'currency', currency: 'XOF' }).format(price);
 };
+
+// Settings
+export const fetchSettings = async () => {
+  const response = await fetch(`${API_URL}/settings`);
+  if (!response.ok) {
+    throw new Error('Erreur lors de la récupération des paramètres');
+  }
+  return response.json();
+};
+
+export const updateSetting = async (key, value, token) => {
+  const response = await fetch(`${API_URL}/settings/${key}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({ value })
+  });
+  if (!response.ok) {
+    throw new Error('Erreur lors de la mise à jour du paramètre');
+  }
+  return response.json();
+};

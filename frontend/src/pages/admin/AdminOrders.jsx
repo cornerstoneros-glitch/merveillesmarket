@@ -98,7 +98,12 @@ const AdminOrders = () => {
                         {items.length} article(s)
                       </td>
                       <td style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>
-                        {order.total.toLocaleString()} FCFA
+                        <div>{order.total.toLocaleString()} FCFA</div>
+                        {order.shippingFee > 0 && (
+                          <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', fontWeight: 'normal' }}>
+                            dont livraison: {order.shippingFee.toLocaleString()} FCFA
+                          </div>
+                        )}
                       </td>
                       <td style={{ padding: '1rem 1.5rem' }}>
                         <span style={{ backgroundColor: statusColors.bg, color: statusColors.text, padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.85rem', fontWeight: '500' }}>

@@ -1,12 +1,27 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Trash2, ArrowRight } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
-import { formatPrice } from '../api';
+import { formatPrice, fetchSettings } from '../api';
 
 const Cart = () => {
   const { cartItems, updateQuantity, removeFromCart, getCartTotal } = useContext(CartContext);
   const navigate = useNavigate();
+  const [shippingFee, setShippingFee] = useState(0);
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const settings = await fetchSettings();
+        if (settings && settings.shippingFee) {
+          setShippingFee(parseFloat(settings.shippingFee));
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+    };
+    getSettings();
+  }, []);
 
   if (cartItems.length === 0) {
     return (
@@ -68,11 +83,13 @@ const Cart = () => {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>
             <span>Frais de livraison</span>
-            <span style={{ color: 'var(--color-text-muted)' }}>Calculés à la prochaine étape</span>
+            <span style={{ color: shippingFee === 0 ? 'var(--color-green)' : 'inherit' }}>
+              {shippingFee === 0 ? 'Gratuit' : formatPrice(shippingFee)}
+            </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', fontWeight: '700', fontSize: '1.25rem' }}>
             <span>Total estimé</span>
-            <span>{formatPrice(getCartTotal())}</span>
+            <span>{formatPrice(getCartTotal() + shippingFee)}</span>
           </div>
           <button 
             onClick={() => navigate('/checkout')} 

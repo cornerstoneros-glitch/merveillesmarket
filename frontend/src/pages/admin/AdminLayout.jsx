@@ -24,6 +24,7 @@ const AdminLayout = () => {
     { path: '/admin', icon: <LayoutDashboard size={20} />, label: 'Tableau de bord' },
     { path: '/admin/orders', icon: <ShoppingCart size={20} />, label: 'Commandes' },
     { path: '/admin/products', icon: <Package size={20} />, label: 'Produits' },
+    { path: '/admin/settings', icon: <Settings size={20} />, label: 'Paramètres' },
   ];
 
   if (!token) return null;

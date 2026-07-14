@@ -17,6 +17,7 @@ import AdminLayout from './pages/admin/AdminLayout';
 import AdminStats from './pages/admin/AdminStats';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
+import AdminSettings from './pages/admin/AdminSettings';
 import { CartProvider } from './context/CartContext';
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
               <Route index element={<AdminStats />} />
               <Route path="orders" element={<AdminOrders />} />
               <Route path="products" element={<AdminProducts />} />
+              <Route path="settings" element={<AdminSettings />} />
             </Route>
 
             {/* Fallback route */}

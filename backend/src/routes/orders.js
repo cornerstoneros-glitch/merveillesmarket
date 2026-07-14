@@ -7,7 +7,7 @@ const router = express.Router();
 // Créer une commande
 router.post('/', async (req, res) => {
   try {
-    const { items, total, guestName, guestEmail, guestPhone, guestAddress } = req.body;
+    const { items, total, shippingFee, guestName, guestEmail, guestPhone, guestAddress } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Le panier est vide' });
@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
       data: {
         items: JSON.stringify(items),
         total,
+        shippingFee: shippingFee || 0,
         guestName,
         guestEmail,
         guestPhone,

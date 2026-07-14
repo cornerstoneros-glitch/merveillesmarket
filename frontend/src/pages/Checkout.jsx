@@ -1,8 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
-import { formatPrice, createOrder } from '../api';
+import { formatPrice, createOrder, fetchSettings } from '../api';
 
 const Checkout = () => {
   const { cartItems, getCartTotal, clearCart } = useContext(CartContext);
@@ -17,6 +17,21 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
+  const [shippingFee, setShippingFee] = useState(0);
+
+  useEffect(() => {
+    const getSettings = async () => {
+      try {
+        const settings = await fetchSettings();
+        if (settings && settings.shippingFee) {
+          setShippingFee(parseFloat(settings.shippingFee));
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+    };
+    getSettings();
+  }, []);
 
   if (cartItems.length === 0 && !success) {
     navigate('/cart');
@@ -37,7 +52,8 @@ const Checkout = () => {
       const orderData = {
         ...formData,
         items: cartItems,
-        total: getCartTotal()
+        total: getCartTotal() + shippingFee,
+        shippingFee
       };
       
       await createOrder(orderData);
@@ -169,11 +185,13 @@ const Checkout = () => {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>
             <span>Frais de livraison</span>
-            <span>Gratuit</span>
+            <span style={{ color: shippingFee === 0 ? 'var(--color-green)' : 'inherit' }}>
+              {shippingFee === 0 ? 'Gratuit' : formatPrice(shippingFee)}
+            </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: '700', fontSize: '1.25rem' }}>
             <span>Total</span>
-            <span>{formatPrice(getCartTotal())}</span>
+            <span>{formatPrice(getCartTotal() + shippingFee)}</span>
           </div>
         </div>
       </div>
