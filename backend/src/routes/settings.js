@@ -1,8 +1,7 @@
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../prismaClient.js';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 // Middleware simple pour vérifier le token admin (déjà présent dans le projet ou à ajuster si besoin)
 // Par simplicité et cohérence avec les autres routes, on suppose que le token est vérifié si nécessaire
