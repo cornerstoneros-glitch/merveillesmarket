@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, User } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 
@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [acceptCGV, setAcceptCGV] = useState(false);
   
   const { login, register } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -155,8 +156,22 @@ const Login = () => {
             </div>
           </div>
 
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginTop: '0.5rem' }}>
+            <input 
+              type="checkbox" 
+              id="acceptCGV" 
+              checked={acceptCGV}
+              onChange={(e) => setAcceptCGV(e.target.checked)}
+              required
+              style={{ marginTop: '0.25rem', accentColor: 'var(--color-primary)', width: '16px', height: '16px' }}
+            />
+            <label htmlFor="acceptCGV" style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)', lineHeight: '1.4' }}>
+              En {isRegister ? 'créant un compte' : 'me connectant'}, j'accepte les <Link to="/cgv" style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}>Conditions Générales de Vente (CGV)</Link> ainsi que la politique de confidentialité de Merveilles Market.
+            </label>
+          </div>
+
           <button 
-            type="submit" 
+            type="submit"  
             className="btn-primary" 
             disabled={isLoading}
             style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', padding: '1rem', width: '100%' }}

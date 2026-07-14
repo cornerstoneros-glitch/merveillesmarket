@@ -41,7 +41,7 @@ const Footer = () => {
             <li><Link to="/contact">Contactez-nous</Link></li>
             <li><Link to="/faq">FAQ</Link></li>
             <li><Link to="/shipping">Livraison & Retours</Link></li>
-            <li><Link to="/terms">Conditions Générales de Vente</Link></li>
+            <li><Link to="/cgv">Conditions Générales de Vente</Link></li>
           </ul>
         </div>
         
@@ -56,8 +56,15 @@ const Footer = () => {
       </div>
       
       <div className="footer-bottom">
-        <div className="container">
-          <p>&copy; {new Date().getFullYear()} Merveilles Trade Market. Tous droits réservés.</p>
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', fontSize: '0.85rem' }}>
+            <Link to="/cgu" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>CGU</Link>
+            <Link to="/cgv" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>CGV</Link>
+            <Link to="/mentions-legales" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Mentions Légales</Link>
+            <Link to="/confidentialite" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Confidentialité</Link>
+            <Link to="/cookies" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Cookies</Link>
+          </div>
+          <p style={{ margin: 0, opacity: 0.6 }}>&copy; {new Date().getFullYear()} Merveilles Trade Market. Tous droits réservés.</p>
         </div>
       </div>
     </footer>

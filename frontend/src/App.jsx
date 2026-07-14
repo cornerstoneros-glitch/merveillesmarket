@@ -17,11 +17,13 @@ import Account from './pages/Account';
 import SearchResults from './pages/SearchResults';
 import NewsletterPopup from './components/NewsletterPopup';
 import Ticker from './components/Ticker';
+import CookiePopup from './components/CookiePopup';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminStats from './pages/admin/AdminStats';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
+import { CGU, CGV, MentionsLegales, Confidentialite, PolitiqueCookies } from './pages/LegalPages';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
 
@@ -55,6 +57,13 @@ function App() {
               <Route path="settings" element={<AdminSettings />} />
             </Route>
 
+            {/* Legal Pages */}
+            <Route path="/cgu" element={<CGU />} />
+            <Route path="/cgv" element={<CGV />} />
+            <Route path="/mentions-legales" element={<MentionsLegales />} />
+            <Route path="/confidentialite" element={<Confidentialite />} />
+            <Route path="/cookies" element={<PolitiqueCookies />} />
+
             {/* Fallback route */}
             <Route path="*" element={<Home />} />
           </Routes>
@@ -62,6 +71,7 @@ function App() {
         <Ticker />
         <Footer />
         <NewsletterPopup />
+        <CookiePopup />
       </div>
       </Router>
       </CartProvider>

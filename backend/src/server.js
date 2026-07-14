@@ -29,8 +29,9 @@ app.use('/api/orders', ordersRouter);
 app.use('/api/upload', uploadRouter);
 app.use('/api/settings', settingsRouter);
 
-// Servir le dossier uploads pour les images
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Servir le dossier uploads pour les images (supporte un dossier externe via UPLOAD_DIR)
+const uploadPath = process.env.UPLOAD_DIR || path.join(__dirname, '../uploads');
+app.use('/uploads', express.static(uploadPath));
 
 // Servir les fichiers statiques du frontend (dossier dist après le build)
 const frontendPath = path.join(__dirname, '../../frontend/dist');

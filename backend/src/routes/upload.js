@@ -10,8 +10,8 @@ const __dirname = path.dirname(__filename);
 
 const router = express.Router();
 
-// S'assurer que le dossier uploads existe
-const uploadDir = path.join(__dirname, '../../uploads');
+// S'assurer que le dossier uploads existe (supporte un dossier externe via UPLOAD_DIR)
+const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
