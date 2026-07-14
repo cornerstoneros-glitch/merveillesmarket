@@ -13,6 +13,7 @@ import FAQ from './pages/FAQ';
 import Shipping from './pages/Shipping';
 import Terms from './pages/Terms';
 import Login from './pages/Login';
+import Account from './pages/Account';
 import SearchResults from './pages/SearchResults';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminStats from './pages/admin/AdminStats';
@@ -20,11 +21,13 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
       <div className="app-container">
         <Header />
         <main className="main-content">
@@ -41,6 +44,7 @@ function App() {
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/account" element={<Account />} />
             
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<AdminStats />} />
@@ -55,8 +59,9 @@ function App() {
         </main>
         <Footer />
       </div>
-    </Router>
-    </CartProvider>
+      </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

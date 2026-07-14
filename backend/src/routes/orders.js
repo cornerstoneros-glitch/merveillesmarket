@@ -7,7 +7,7 @@ const router = express.Router();
 // Créer une commande
 router.post('/', async (req, res) => {
   try {
-    const { items, total, shippingFee, guestName, guestEmail, guestPhone, guestAddress } = req.body;
+    const { items, total, shippingFee, guestName, guestEmail, guestPhone, guestAddress, userId } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ error: 'Le panier est vide' });
@@ -42,6 +42,7 @@ router.post('/', async (req, res) => {
           items: JSON.stringify(items),
           total,
           shippingFee: shippingFee || 0,
+          userId: userId ? parseInt(userId) : null,
           guestName,
           guestEmail,
           guestPhone,
@@ -56,6 +57,21 @@ router.post('/', async (req, res) => {
     console.error('Erreur lors de la création de la commande:', error);
     // Renvoyer l'erreur spécifique du stock si c'est le cas
     res.status(400).json({ error: error.message || 'Erreur serveur lors de la création de la commande' });
+  }
+});
+
+// Récupérer les commandes de l'utilisateur connecté
+import { auth } from '../middleware/auth.js';
+router.get('/my-orders', auth, async (req, res) => {
+  try {
+    const orders = await prisma.order.findMany({
+      where: { userId: req.user.userId },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json(orders);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur lors de la récupération de vos commandes' });
   }
 });
 

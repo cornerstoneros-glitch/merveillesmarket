@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, Menu, Search, User } from 'lucide-react';
+import { ShoppingCart, Menu, Search, User, LogOut } from 'lucide-react';
 import { CartContext } from '../context/CartContext';
+import { AuthContext } from '../context/AuthContext';
 import './Header.css';
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getCartCount } = useContext(CartContext);
+  const { user, logout } = useContext(AuthContext);
   const [searchQuery, setSearchQuery] = useState('');
   
   const isAbbeys = location.pathname.includes('/abbeys');
@@ -17,7 +19,7 @@ const Header = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery(''); // Optional: clear after search
+      setSearchQuery(''); 
     }
   };
 
@@ -27,8 +29,9 @@ const Header = () => {
         <div className="container header-top-content">
           <span>Naturel pour votre santé, qualité pour votre quotidien</span>
           <div className="header-top-links">
+            <a href="https://www.facebook.com/MerveillesAbbey" target="_blank" rel="noopener noreferrer">Merveilles Abbey (FB)</a>
+            <a href="https://www.facebook.com/JosyMarket01/" target="_blank" rel="noopener noreferrer">Josy Market (FB)</a>
             <Link to="/contact">Aide & Contact</Link>
-            <Link to="/about">À propos</Link>
           </div>
         </div>
       </div>
@@ -55,9 +58,20 @@ const Header = () => {
         </form>
         
         <div className="header-actions">
-          <Link to="/account" className="action-btn" aria-label="Compte">
-            <User size={24} />
-          </Link>
+          {user ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Link to={user.role === 'ADMIN' ? "/admin" : "/account"} className="action-btn" aria-label="Compte" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text)' }}>
+                <User size={24} />
+                <span style={{ fontSize: '0.9rem', fontWeight: '500', display: 'none' }} className="d-md-block">Mon Compte</span>
+              </Link>
+            </div>
+          ) : (
+            <Link to="/login" className="action-btn" aria-label="Connexion" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text)' }}>
+              <User size={24} />
+              <span style={{ fontSize: '0.9rem', fontWeight: '500', display: 'none' }} className="d-md-block">Connexion</span>
+            </Link>
+          )}
+          
           <Link to="/cart" className="action-btn cart-btn" aria-label="Panier">
             <ShoppingCart size={24} />
             {getCartCount() > 0 && <span className="cart-badge">{getCartCount()}</span>}
