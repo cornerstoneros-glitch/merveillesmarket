@@ -64,7 +64,12 @@ const Footer = () => {
             <Link to="/confidentialite" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Confidentialité</Link>
             <Link to="/cookies" style={{ color: 'rgba(255,255,255,0.7)', textDecoration: 'none' }}>Cookies</Link>
           </div>
-          <p style={{ margin: 0, opacity: 0.6 }}>&copy; {new Date().getFullYear()} Merveilles Trade Market. Tous droits réservés.</p>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', opacity: 0.8 }}>
+            <p style={{ margin: 0 }}>&copy; {new Date().getFullYear()} Merveilles Trade Market. Tous droits réservés.</p>
+            <p style={{ margin: 0, fontSize: '0.85rem' }}>
+              Développé par <a href="https://www.cornerstoneros.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-secondary)', textDecoration: 'none', fontWeight: '500' }}>Cornerstoneros</a>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
