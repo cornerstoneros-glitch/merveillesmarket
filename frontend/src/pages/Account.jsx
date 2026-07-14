@@ -4,7 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Package, User, Calendar, LogOut } from 'lucide-react';
 import { formatPrice } from '../api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.PROD ? '/api' : 'http://localhost:5000/api';
 
 const Account = () => {
   const { user, token, loading, logout } = useContext(AuthContext);
@@ -20,7 +20,12 @@ const Account = () => {
       })
       .then(res => res.json())
       .then(data => {
-        setOrders(data);
+        if (Array.isArray(data)) {
+          setOrders(data);
+        } else {
+          console.error("API Error:", data);
+          setOrders([]);
+        }
         setLoadingOrders(false);
       })
       .catch(err => {
