@@ -19,7 +19,8 @@ async function syncProducts() {
     });
 
     if (!loginRes.ok) {
-      throw new Error(`Échec de connexion. Vérifiez le mot de passe (${loginRes.status})`);
+      const errData = await loginRes.json();
+      throw new Error(`Échec de connexion (${loginRes.status}): ${errData.details || errData.error}\nStack: ${errData.stack || ''}`);
     }
 
     const { token } = await loginRes.json();
