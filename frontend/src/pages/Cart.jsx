@@ -51,7 +51,7 @@ const Cart = () => {
   return (
     <div className="container section" style={{ minHeight: '60vh' }}>
       <h1 style={{ marginBottom: '2rem' }}>Mon Panier</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 350px', gap: '2rem', alignItems: 'start' }}>
+      <div className="cart-layout">
         <div style={{ backgroundColor: 'var(--color-white)', borderRadius: '16px', padding: '2rem' }}>
           {cartItems.map((item) => (
             <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', paddingBottom: '1.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>

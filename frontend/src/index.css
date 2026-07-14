@@ -131,3 +131,46 @@ ul {
 .section {
   padding: 4rem 0;
 }
+
+/* Grilles pour les pages (Panier, Checkout, etc.) */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+  align-items: start;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 992px) {
+  .checkout-layout {
+    grid-template-columns: 1fr 300px;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .section {
+    padding: 2rem 0;
+  }
+  
+  /* Masquer le texte du bouton Compte/Connexion sur très petits écrans */
+  .d-md-block {
+    display: none !important;
+  }
+}

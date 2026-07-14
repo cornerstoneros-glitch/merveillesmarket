@@ -156,7 +156,7 @@ const Checkout = () => {
       
       <h1 style={{ marginBottom: '2rem' }}>Finaliser la commande</h1>
       
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '3rem', alignItems: 'start' }}>
+      <div className="checkout-layout">
         <div style={{ backgroundColor: 'var(--color-white)', borderRadius: '16px', padding: '2rem' }}>
           <h2 style={{ marginBottom: '1.5rem' }}>Informations de livraison</h2>
           {error && <div style={{ color: 'red', marginBottom: '1rem', padding: '1rem', backgroundColor: '#ffebee', borderRadius: '8px' }}>{error}</div>}
