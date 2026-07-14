@@ -14,6 +14,7 @@ const ProductForm = ({ product, onClose, token }) => {
     images: product?.images || [],
     description: product?.description || '',
     warnings: product?.warnings || '',
+    stock: product?.stock || 0,
     isNew: product?.isNew || false,
     promo: product?.promo || false
   });
@@ -115,6 +116,11 @@ const ProductForm = ({ product, onClose, token }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
             <label style={{ fontWeight: '500' }}>Prix (FCFA)</label>
             <input type="number" name="price" value={formData.price} onChange={handleChange} required style={inputStyle} />
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontWeight: '500' }}>Stock</label>
+            <input type="number" name="stock" value={formData.stock} onChange={handleChange} required min="0" style={inputStyle} />
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

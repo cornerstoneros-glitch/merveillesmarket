@@ -51,7 +51,7 @@ router.get('/:id', async (req, res) => {
 // ADMIN: Créer un produit
 router.post('/', adminAuth, async (req, res) => {
   try {
-    const { name, price, category, universe, image, images, description, warnings, isNew, promo } = req.body;
+    const { name, price, category, universe, image, images, description, warnings, stock, isNew, promo } = req.body;
     
     let imagesString = null;
     if (Array.isArray(images)) {
@@ -68,6 +68,7 @@ router.post('/', adminAuth, async (req, res) => {
         images: imagesString,
         description,
         warnings: warnings || null,
+        stock: stock !== undefined ? parseInt(stock) : 0,
         isNew: isNew || false,
         promo: promo || false
       }
@@ -82,7 +83,7 @@ router.post('/', adminAuth, async (req, res) => {
 // ADMIN: Mettre à jour un produit
 router.put('/:id', adminAuth, async (req, res) => {
   try {
-    const { name, price, category, universe, image, images, description, warnings, isNew, promo } = req.body;
+    const { name, price, category, universe, image, images, description, warnings, stock, isNew, promo } = req.body;
     
     let imagesString = undefined;
     if (images !== undefined) {
@@ -100,6 +101,7 @@ router.put('/:id', adminAuth, async (req, res) => {
         images: imagesString,
         description,
         warnings,
+        stock: stock !== undefined ? parseInt(stock) : undefined,
         isNew,
         promo
       }

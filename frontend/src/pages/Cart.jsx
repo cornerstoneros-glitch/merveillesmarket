@@ -61,7 +61,7 @@ const Cart = () => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--color-bg-light)', borderRadius: '8px', padding: '0.25rem' }}>
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{ padding: '0.25rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>-</button>
                     <span>{item.quantity}</span>
-                    <button onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{ padding: '0.25rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>+</button>
+                    <button disabled={item.quantity >= item.stock} onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{ padding: '0.25rem 0.5rem', background: 'none', border: 'none', cursor: item.quantity >= item.stock ? 'not-allowed' : 'pointer', opacity: item.quantity >= item.stock ? 0.5 : 1 }}>+</button>
                   </div>
                   <button onClick={() => removeFromCart(item.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
                     <Trash2 size={16} /> Supprimer

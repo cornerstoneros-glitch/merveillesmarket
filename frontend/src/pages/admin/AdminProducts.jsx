@@ -78,6 +78,7 @@ const AdminProducts = () => {
                   <th style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>Produit</th>
                   <th style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>Univers</th>
                   <th style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>Prix</th>
+                  <th style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>Stock</th>
                   <th style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>Tags</th>
                   <th style={{ padding: '1rem 1.5rem', fontWeight: '600', textAlign: 'right' }}>Actions</th>
                 </tr>
@@ -96,6 +97,18 @@ const AdminProducts = () => {
                     </td>
                     <td style={{ padding: '1rem 1.5rem', fontWeight: '600' }}>
                       {product.price.toLocaleString()} FCFA
+                    </td>
+                    <td style={{ padding: '1rem 1.5rem' }}>
+                      <span style={{ 
+                        backgroundColor: product.stock === 0 ? '#fee2e2' : (product.stock < 5 ? '#fef3c7' : '#f3f4f6'), 
+                        color: product.stock === 0 ? '#b91c1c' : (product.stock < 5 ? '#b45309' : '#374151'), 
+                        padding: '0.25rem 0.5rem', 
+                        borderRadius: '4px', 
+                        fontSize: '0.85rem', 
+                        fontWeight: '600' 
+                      }}>
+                        {product.stock}
+                      </span>
                     </td>
                     <td style={{ padding: '1rem 1.5rem' }}>
                       {product.isNew && <span style={{ marginRight: '0.5rem', color: '#2563eb', fontSize: '0.85rem' }}>Nouveau</span>}

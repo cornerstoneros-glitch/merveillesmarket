@@ -104,20 +104,31 @@ const ProductDetail = () => {
           )}
           
           <div className="add-to-cart-section">
-            <div className="quantity-selector">
-              <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity(quantity + 1)}>+</button>
-            </div>
-            <button 
-              className={`btn-primary btn-add-cart ${isAbbeys ? 'btn-abbeys' : 'btn-josy'}`}
-              onClick={() => {
-                addToCart(product, quantity);
-                alert('Produit ajouté au panier !');
-              }}
-            >
-              <ShoppingCart size={20} /> Ajouter au panier
-            </button>
+            {product.stock > 0 ? (
+              <>
+                <div style={{ marginBottom: '1rem', fontWeight: '500', color: product.stock < 5 ? '#ea580c' : 'var(--color-text-muted)' }}>
+                  {product.stock < 5 ? `Plus que ${product.stock} en stock` : 'En stock'}
+                </div>
+                <div className="quantity-selector">
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))}>-</button>
+                  <span>{quantity}</span>
+                  <button onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}>+</button>
+                </div>
+                <button 
+                  className={`btn-primary btn-add-cart ${isAbbeys ? 'btn-abbeys' : 'btn-josy'}`}
+                  onClick={() => {
+                    addToCart(product, quantity);
+                    alert('Produit ajouté au panier !');
+                  }}
+                >
+                  <ShoppingCart size={20} /> Ajouter au panier
+                </button>
+              </>
+            ) : (
+              <div style={{ padding: '1rem', backgroundColor: '#fee2e2', color: '#b91c1c', borderRadius: '8px', fontWeight: '600', textAlign: 'center' }}>
+                En rupture de stock
+              </div>
+            )}
           </div>
         </div>
       </div>

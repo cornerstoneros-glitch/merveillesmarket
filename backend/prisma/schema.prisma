@@ -16,6 +16,7 @@ model Product {
   images      String?  // JSON stringified array of secondary images
   description String
   warnings    String?
+  stock       Int      @default(0)
   isNew       Boolean  @default(false)
   promo       Boolean  @default(false)
   createdAt   DateTime @default(now())

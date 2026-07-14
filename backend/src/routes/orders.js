@@ -13,23 +13,49 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Le panier est vide' });
     }
 
-    const order = await prisma.order.create({
-      data: {
-        items: JSON.stringify(items),
-        total,
-        shippingFee: shippingFee || 0,
-        guestName,
-        guestEmail,
-        guestPhone,
-        guestAddress,
-        status: 'PENDING'
+    // Utilisation d'une transaction pour vérifier et mettre à jour le stock
+    const order = await prisma.$transaction(async (tx) => {
+      // 1. Vérifier le stock pour chaque article
+      for (const item of items) {
+        const product = await tx.product.findUnique({
+          where: { id: item.id }
+        });
+        
+        if (!product) {
+          throw new Error(`Produit introuvable : ${item.name}`);
+        }
+        
+        if (product.stock < item.quantity) {
+          throw new Error(`Stock insuffisant pour ${product.name} (disponible : ${product.stock})`);
+        }
+        
+        // 2. Décrémenter le stock
+        await tx.product.update({
+          where: { id: item.id },
+          data: { stock: product.stock - item.quantity }
+        });
       }
+
+      // 3. Créer la commande
+      return await tx.order.create({
+        data: {
+          items: JSON.stringify(items),
+          total,
+          shippingFee: shippingFee || 0,
+          guestName,
+          guestEmail,
+          guestPhone,
+          guestAddress,
+          status: 'PENDING'
+        }
+      });
     });
 
     res.status(201).json(order);
   } catch (error) {
     console.error('Erreur lors de la création de la commande:', error);
-    res.status(500).json({ error: 'Erreur serveur lors de la création de la commande' });
+    // Renvoyer l'erreur spécifique du stock si c'est le cas
+    res.status(400).json({ error: error.message || 'Erreur serveur lors de la création de la commande' });
   }
 });
 
