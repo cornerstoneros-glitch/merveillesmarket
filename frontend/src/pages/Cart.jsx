@@ -83,13 +83,13 @@ const Cart = () => {
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>
             <span>Frais de livraison</span>
-            <span style={{ color: shippingFee === 0 ? 'var(--color-green)' : 'inherit' }}>
-              {shippingFee === 0 ? 'Gratuit' : formatPrice(shippingFee)}
+            <span style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+              Calculés à l'étape suivante
             </span>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem', fontWeight: '700', fontSize: '1.25rem' }}>
             <span>Total estimé</span>
-            <span>{formatPrice(getCartTotal() + shippingFee)}</span>
+            <span>{formatPrice(getCartTotal())}</span>
           </div>
           <button 
             onClick={() => navigate('/checkout')} 

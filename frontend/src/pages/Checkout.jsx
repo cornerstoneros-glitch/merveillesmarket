@@ -12,26 +12,30 @@ const Checkout = () => {
     guestName: '',
     guestEmail: '',
     guestPhone: '',
+    guestLocation: 'abidjan',
     guestAddress: ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const [shippingFee, setShippingFee] = useState(0);
+  const [shippingFee, setShippingFee] = useState(1500);
 
   useEffect(() => {
-    const getSettings = async () => {
-      try {
-        const settings = await fetchSettings();
-        if (settings && settings.shippingFee) {
-          setShippingFee(parseFloat(settings.shippingFee));
-        }
-      } catch (err) {
-        console.error("Error fetching settings:", err);
-      }
-    };
-    getSettings();
-  }, []);
+    // Calcul automatique des frais de livraison
+    switch(formData.guestLocation) {
+      case 'yopougon':
+        setShippingFee(1000);
+        break;
+      case 'abidjan':
+        setShippingFee(1500);
+        break;
+      case 'hors_abidjan':
+        setShippingFee(2000);
+        break;
+      default:
+        setShippingFee(1500);
+    }
+  }, [formData.guestLocation]);
 
   if (cartItems.length === 0 && !success) {
     navigate('/cart');
@@ -49,8 +53,17 @@ const Checkout = () => {
     setError(null);
     
     try {
+      const locationLabels = {
+        yopougon: "Yopougon",
+        abidjan: "Abidjan",
+        hors_abidjan: "Hors Abidjan / Bingerville / Port-Bouët"
+      };
+      
+      const fullAddress = `[Zone: ${locationLabels[formData.guestLocation]}] ${formData.guestAddress}`;
+
       const orderData = {
         ...formData,
+        guestAddress: fullAddress,
         items: cartItems,
         total: getCartTotal() + shippingFee,
         shippingFee
@@ -133,7 +146,23 @@ const Checkout = () => {
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <label htmlFor="guestAddress" style={{ fontWeight: '500' }}>Adresse de livraison</label>
+              <label htmlFor="guestLocation" style={{ fontWeight: '500' }}>Zone de livraison</label>
+              <select 
+                id="guestLocation" 
+                name="guestLocation" 
+                value={formData.guestLocation} 
+                onChange={handleInputChange} 
+                required 
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem', fontFamily: 'inherit', backgroundColor: 'var(--color-white)' }}
+              >
+                <option value="yopougon">Yopougon (1 000 FCFA)</option>
+                <option value="abidjan">Abidjan - Autres communes (1 500 FCFA)</option>
+                <option value="hors_abidjan">Bingerville, Port-Bouët et Hors d'Abidjan (2 000 FCFA)</option>
+              </select>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <label htmlFor="guestAddress" style={{ fontWeight: '500' }}>Adresse détaillée</label>
               <textarea 
                 id="guestAddress" 
                 name="guestAddress" 
