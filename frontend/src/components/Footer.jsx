@@ -15,11 +15,13 @@ const Footer = () => {
             Naturel pour votre santé, qualité pour votre quotidien.
           </p>
           <div className="footer-socials" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <a href="https://www.facebook.com/MerveillesAbbey" target="_blank" rel="noopener noreferrer" aria-label="Facebook Merveilles Abbey" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Share2 size={20} /> Merveilles Abbey
+            <a href="https://www.facebook.com/MerveillesAbbey" target="_blank" rel="noopener noreferrer" aria-label="Facebook Merveilles Abbey">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              Merveilles Abbey
             </a>
-            <a href="https://www.facebook.com/JosyMarket01/" target="_blank" rel="noopener noreferrer" aria-label="Facebook Josy Market" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Share2 size={20} /> Josy Market
+            <a href="https://www.facebook.com/JosyMarket01/" target="_blank" rel="noopener noreferrer" aria-label="Facebook Josy Market">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+              Josy Market
             </a>
           </div>
         </div>

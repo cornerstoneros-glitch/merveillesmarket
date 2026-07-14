@@ -15,6 +15,8 @@ import Terms from './pages/Terms';
 import Login from './pages/Login';
 import Account from './pages/Account';
 import SearchResults from './pages/SearchResults';
+import NewsletterPopup from './components/NewsletterPopup';
+import Ticker from './components/Ticker';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminStats from './pages/admin/AdminStats';
 import AdminOrders from './pages/admin/AdminOrders';
@@ -57,7 +59,9 @@ function App() {
             <Route path="*" element={<Home />} />
           </Routes>
         </main>
+        <Ticker />
         <Footer />
+        <NewsletterPopup />
       </div>
       </Router>
       </CartProvider>

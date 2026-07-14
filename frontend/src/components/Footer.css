@@ -52,19 +52,21 @@
 }
 
 .footer-socials a {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.1);
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
   transition: all 0.2s;
+  color: var(--color-cream);
+  text-decoration: none;
+  width: fit-content;
 }
 
 .footer-socials a:hover {
-  background-color: var(--color-gold);
-  color: var(--color-white);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-gold);
 }
 
 .footer-col ul {
