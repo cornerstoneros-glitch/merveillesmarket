@@ -1,7 +1,39 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { sendContactMessage } from '../api';
 
 const Contact = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [statusMessage, setStatusMessage] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim() || !message.trim()) return;
+
+    setStatus('loading');
+    setStatusMessage('');
+
+    try {
+      const res = await sendContactMessage({
+        name: name.trim(),
+        email: email.trim(),
+        message: message.trim()
+      });
+
+      setStatus('success');
+      setStatusMessage(res.message || 'Votre message a bien été envoyé ! Nous vous répondrons sous 24h.');
+      setName('');
+      setEmail('');
+      setMessage('');
+    } catch (err) {
+      setStatus('error');
+      setStatusMessage(err.message || 'Erreur lors de l\'envoi de votre message. Veuillez réessayer.');
+    }
+  };
+
   return (
     <div className="container section" style={{ minHeight: '70vh' }}>
       <h1 style={{ marginBottom: '1rem', textAlign: 'center' }}>Contactez-nous</h1>
@@ -54,21 +86,65 @@ const Contact = () => {
 
         <div style={{ backgroundColor: 'var(--color-white)', padding: '2rem', borderRadius: '16px' }}>
           <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Envoyez-nous un message</h2>
-          <form style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+          {status === 'success' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', borderRadius: '8px', backgroundColor: '#dcfce7', color: '#166534', border: '1px solid #bbf7d0', marginBottom: '1.5rem' }}>
+              <CheckCircle size={20} />
+              <span>{statusMessage}</span>
+            </div>
+          )}
+
+          {status === 'error' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', borderRadius: '8px', backgroundColor: '#fee2e2', color: '#991b1b', border: '1px solid #fecaca', marginBottom: '1.5rem' }}>
+              <AlertCircle size={20} />
+              <span>{statusMessage}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label htmlFor="name" style={{ fontWeight: '500' }}>Votre nom</label>
-              <input type="text" id="name" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem' }} required />
+              <input 
+                type="text" 
+                id="name" 
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Ex: Jean Dupont"
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem' }} 
+                required 
+              />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label htmlFor="email" style={{ fontWeight: '500' }}>Votre email</label>
-              <input type="email" id="email" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem' }} required />
+              <input 
+                type="email" 
+                id="email" 
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Ex: jean.dupont@email.com"
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem' }} 
+                required 
+              />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <label htmlFor="message" style={{ fontWeight: '500' }}>Votre message</label>
-              <textarea id="message" rows="5" style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem', fontFamily: 'inherit' }} required></textarea>
+              <textarea 
+                id="message" 
+                rows="5" 
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="Écrivez votre message ici..."
+                style={{ padding: '0.75rem', borderRadius: '8px', border: '1px solid var(--color-bg-light)', fontSize: '1rem', fontFamily: 'inherit' }} 
+                required
+              />
             </div>
-            <button type="button" className="btn-primary" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
-              <Send size={18} /> Envoyer le message
+            <button 
+              type="submit" 
+              className="btn-primary" 
+              disabled={status === 'loading'}
+              style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem', opacity: status === 'loading' ? 0.7 : 1 }}
+            >
+              <Send size={18} /> {status === 'loading' ? 'Envoi en cours...' : 'Envoyer le message'}
             </button>
           </form>
         </div>
@@ -78,3 +154,4 @@ const Contact = () => {
 };
 
 export default Contact;
+

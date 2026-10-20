@@ -41,13 +41,14 @@ const formatPriceFCFA = (amount) => {
 /**
  * Envoie un email générique avec fallback en console si SMTP non configuré
  */
-export const sendMail = async ({ from, to, subject, html, text }) => {
+export const sendMail = async ({ from, to, subject, html, text, replyTo }) => {
   const transporter = createTransporter();
 
   if (!transporter) {
     console.log(`\n📧 [EMAIL SIMULATION - SMTP non configuré dans .env]`);
     console.log(`De: ${from}`);
     console.log(`À: ${to}`);
+    if (replyTo) console.log(`Répondre à: ${replyTo}`);
     console.log(`Sujet: ${subject}`);
     console.log(`Texte / Aperçu: ${text || (html ? html.replace(/<[^>]+>/g, ' ').slice(0, 150) + '...' : '')}`);
     console.log(`----------------------------------------------------\n`);
@@ -58,6 +59,7 @@ export const sendMail = async ({ from, to, subject, html, text }) => {
     const info = await transporter.sendMail({
       from,
       to,
+      replyTo,
       subject,
       text: text || (html ? html.replace(/<[^>]+>/g, ' ') : ''),
       html,
@@ -338,3 +340,43 @@ export const sendNewsletterCampaign = async ({ subject, htmlContent, recipients 
 
   return { sentCount, failCount };
 };
+
+/**
+ * Envoi d'un message reçu depuis le formulaire de contact à contact@merveillesmarket.net
+ */
+export const sendContactMessageEmail = async ({ name, email, message }) => {
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden;">
+      <div style="background-color: #143C1A; padding: 25px; text-align: center; color: #ffffff;">
+        <h1 style="margin: 0; font-size: 24px; color: #BE8943;">Merveilles Market</h1>
+        <p style="margin: 5px 0 0; font-size: 15px;">Nouveau message reçu depuis le site</p>
+      </div>
+
+      <div style="padding: 25px;">
+        <div style="background-color: #f8fafc; border-left: 4px solid #143C1A; padding: 15px; margin-bottom: 20px;">
+          <p style="margin: 3px 0;"><strong>Expéditeur :</strong> ${name}</p>
+          <p style="margin: 3px 0;"><strong>Email :</strong> <a href="mailto:${email}" style="color: #143C1A;">${email}</a></p>
+          <p style="margin: 3px 0; color: #64748b; font-size: 13px;">Date : ${new Date().toLocaleString('fr-FR')}</p>
+        </div>
+
+        <h3 style="color: #143C1A; margin-bottom: 8px; margin-top: 0;">Message :</h3>
+        <div style="background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 15px; font-size: 15px; line-height: 1.6; color: #1e293b; white-space: pre-wrap;">
+${message}
+        </div>
+
+        <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0; font-size: 13px; color: #64748b; text-align: center;">
+          💡 Vous pouvez répondre directement à cet email pour contacter ${name} à l'adresse <strong>${email}</strong>.
+        </div>
+      </div>
+    </div>
+  `;
+
+  return sendMail({
+    from: `"Contact Formulaire" <${CONTACT_EMAIL}>`,
+    to: CONTACT_EMAIL,
+    replyTo: email,
+    subject: `📩 [Contact] Nouveau message de ${name}`,
+    html,
+  });
+};
+

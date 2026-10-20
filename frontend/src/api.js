@@ -236,3 +236,20 @@ export const sendNewsletter = async (campaignData, token) => {
   return data;
 };
 
+// Formulaire de contact
+export const sendContactMessage = async (contactData) => {
+  const response = await fetch(`${API_URL}/contact`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(contactData)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur lors de l\'envoi de votre message');
+  }
+  return data;
+};
+
+
