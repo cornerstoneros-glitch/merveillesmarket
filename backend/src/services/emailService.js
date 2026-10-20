@@ -9,15 +9,19 @@ export const NEWSLETTER_FROM_EMAIL = process.env.NEWSLETTER_FROM_EMAIL || '"Merv
 export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'contact@merveillesmarket.net';
 
 // Création du transporteur Nodemailer
+// Supprime les guillemets parasites si les valeurs .env ont été copiées avec guillemets
+const stripQuotes = (val) => (val ? val.replace(/^["']|["']$/g, '').trim() : val);
+
 const createTransporter = () => {
-  const host = process.env.SMTP_HOST;
-  const user = process.env.SMTP_USER;
-  const pass = process.env.SMTP_PASS;
-  const port = parseInt(process.env.SMTP_PORT || '587', 10);
-  const secure = process.env.SMTP_SECURE === 'true' || port === 465;
+  const host = stripQuotes(process.env.SMTP_HOST);
+  const user = stripQuotes(process.env.SMTP_USER);
+  const pass = stripQuotes(process.env.SMTP_PASS);
+  const port = parseInt(stripQuotes(process.env.SMTP_PORT) || '587', 10);
+  const secureRaw = stripQuotes(process.env.SMTP_SECURE);
+  const secure = secureRaw === 'true' || port === 465;
 
   if (!host || !user || !pass) {
-    return null; // SMTP non configuré
+    return null; // SMTP non configuré — mode simulation console
   }
 
   return nodemailer.createTransport({
