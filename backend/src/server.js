@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pkg from '@prisma/client';
+import bcrypt from 'bcryptjs';
 import prisma from './prismaClient.js';
 import { generalApiLimiter } from './middleware/rateLimiter.js';
 
@@ -137,6 +138,25 @@ async function autoMigrate() {
     try { await prisma.$executeRawUnsafe(`CREATE UNIQUE INDEX "NewsletterSubscriber_email_key" ON "NewsletterSubscriber"("email");`); } catch (e) {}
 
     console.log("Auto-migration de la base de données vérifiée.");
+
+    // Initialisation automatique du compte admin (si non existant)
+    // Configurer ADMIN_EMAIL et ADMIN_PASS dans les Secrets Glitch
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@merveillesmarket.net';
+    const adminPass  = process.env.ADMIN_PASS;
+
+    if (adminPass) {
+      const existing = await prisma.user.findUnique({ where: { email: adminEmail } });
+      if (!existing) {
+        const hashed = await bcrypt.hash(adminPass, 10);
+        await prisma.user.create({
+          data: { email: adminEmail, name: 'Administrateur', password: hashed, role: 'ADMIN' }
+        });
+        console.log(`✅ Compte admin créé : ${adminEmail}`);
+      } else {
+        console.log(`ℹ️  Compte admin déjà existant : ${adminEmail}`);
+      }
+    }
+
   } catch (error) {
     console.error("Erreur lors de l'auto-migration:", error);
   }
