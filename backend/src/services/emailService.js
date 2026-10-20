@@ -5,7 +5,7 @@ dotenv.config();
 // Configuration des adresses de référence
 export const ORDER_NOTIFICATION_EMAIL = process.env.ORDER_NOTIFICATION_EMAIL || 'commandes@merveillesmarket.net';
 export const ORDER_FROM_EMAIL = process.env.ORDER_FROM_EMAIL || '"Merveilles Market Commandes" <commandes@merveillesmarket.net>';
-export const NEWSLETTER_FROM_EMAIL = process.env.NEWSLETTER_FROM_EMAIL || '"Merveilles Market" <contact@merveillesmarket.net>';
+export const NEWSLETTER_FROM_EMAIL = process.env.NEWSLETTER_FROM_EMAIL || '"Merveilles Market" <no_reply@merveillesmarket.net>';
 export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'contact@merveillesmarket.net';
 
 // Création du transporteur Nodemailer
@@ -293,7 +293,10 @@ export const sendNewsletterWelcome = async (email, couponCode = 'BIENVENUE10') =
         </div>
 
         <p style="color: #64748b; font-size: 14px; margin-top: 30px;">
-          Cet email vous a été envoyé par <strong>${NEWSLETTER_FROM_EMAIL}</strong>.
+          Cet email a été envoyé depuis <strong>no_reply@merveillesmarket.net</strong>. Merci de ne pas répondre à cette adresse.
+        </p>
+        <p style="color: #94a3b8; font-size: 12px; margin-top: 8px;">
+          Pour nous contacter : <a href="mailto:contact@merveillesmarket.net" style="color: #BE8943;">contact@merveillesmarket.net</a>
         </p>
       </div>
     </div>
@@ -329,7 +332,8 @@ export const sendNewsletterCampaign = async ({ subject, htmlContent, recipients 
           </div>
           <div style="background-color: #f8fafc; padding: 15px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0;">Vous recevez cet email car vous êtes inscrit à la newsletter de Merveilles Market.</p>
-            <p style="margin: 4px 0 0;">Expédié depuis ${CONTACT_EMAIL}</p>
+            <p style="margin: 4px 0 0;">Expédié depuis no_reply@merveillesmarket.net — Ne pas répondre à cet email.</p>
+            <p style="margin: 4px 0 0;">Contact : <a href="mailto:contact@merveillesmarket.net" style="color: #BE8943;">contact@merveillesmarket.net</a></p>
           </div>
         </div>
       `,

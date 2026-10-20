@@ -75,7 +75,7 @@ const NewsletterPopup = () => {
               <p>Merci pour votre inscription ! 🎉</p>
               <p className="newsletter-coupon">Votre code : <strong>BIENVENUE10</strong></p>
               <p style={{ fontSize: '0.85rem', marginTop: '0.5rem', color: '#166534' }}>
-                Un email de bienvenue vous a été envoyé depuis contact@merveillesmarket.net
+                Un email de bienvenue vous a été envoyé depuis no_reply@merveillesmarket.net
               </p>
             </div>
           ) : (
