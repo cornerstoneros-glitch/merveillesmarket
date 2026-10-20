@@ -195,3 +195,44 @@ export const deleteCoupon = async (id, token) => {
   }
   return response.json();
 };
+
+// Newsletter
+export const subscribeNewsletter = async (email) => {
+  const response = await fetch(`${API_URL}/newsletter/subscribe`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur lors de l\'inscription à la newsletter');
+  }
+  return data;
+};
+
+export const fetchNewsletterSubscribers = async (token) => {
+  const response = await fetch(`${API_URL}/newsletter/subscribers`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!response.ok) {
+    throw new Error('Erreur lors de la récupération des abonnés');
+  }
+  return response.json();
+};
+
+export const sendNewsletter = async (campaignData, token) => {
+  const response = await fetch(`${API_URL}/newsletter/send`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify(campaignData)
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    throw new Error(data.error || 'Erreur lors de l\'envoi de la newsletter');
+  }
+  return data;
+};
+

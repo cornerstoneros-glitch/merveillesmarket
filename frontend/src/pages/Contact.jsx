@@ -31,8 +31,12 @@ const Contact = () => {
               </div>
               <div>
                 <h3 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>Email</h3>
-                <p style={{ color: 'var(--color-text-muted)' }}>contact@merveillestrademarket.com</p>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Réponse sous 24h</p>
+                <p style={{ color: 'var(--color-text-muted)', marginBottom: '0.25rem' }}>
+                  <a href="mailto:contact@merveillesmarket.net" style={{ color: 'inherit', textDecoration: 'none' }}>contact@merveillesmarket.net</a>
+                </p>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>
+                  Commandes : <a href="mailto:commandes@merveillesmarket.net" style={{ color: 'var(--color-green-dark)' }}>commandes@merveillesmarket.net</a>
+                </p>
               </div>
             </div>
 

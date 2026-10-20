@@ -1,12 +1,8 @@
 import express from 'express';
+import { adminAuth } from '../middleware/auth.js';
 import prisma from '../prismaClient.js';
 
 const router = express.Router();
-
-// Middleware simple pour vérifier le token admin (déjà présent dans le projet ou à ajuster si besoin)
-// Par simplicité et cohérence avec les autres routes, on suppose que le token est vérifié si nécessaire
-// mais ici on peut récupérer les settings sans auth pour le frontend,
-// et restreindre la modification à l'admin.
 
 // Obtenir tous les paramètres (public)
 router.get('/', async (req, res) => {
@@ -26,17 +22,17 @@ router.get('/', async (req, res) => {
     res.json(settingsObj);
   } catch (error) {
     console.error("Error fetching settings:", error);
-    res.status(500).json({ error: "Failed to fetch settings" });
+    res.status(500).json({ error: "Impossible de récupérer les paramètres" });
   }
 });
 
-// Mettre à jour un paramètre (protégé pour l'admin dans un monde idéal, on applique juste ici)
-router.put('/:key', async (req, res) => {
+// Mettre à jour un paramètre (strictement protégé pour l'admin)
+router.put('/:key', adminAuth, async (req, res) => {
   const { key } = req.params;
   const { value } = req.body;
   
   if (value === undefined) {
-    return res.status(400).json({ error: "Value is required" });
+    return res.status(400).json({ error: "La valeur est requise" });
   }
 
   try {
@@ -49,8 +45,9 @@ router.put('/:key', async (req, res) => {
     res.json(setting);
   } catch (error) {
     console.error(`Error updating setting ${key}:`, error);
-    res.status(500).json({ error: `Failed to update setting ${key}` });
+    res.status(500).json({ error: "Erreur lors de la mise à jour du paramètre" });
   }
 });
 
 export default router;
+

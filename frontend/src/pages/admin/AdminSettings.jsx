@@ -97,6 +97,34 @@ const AdminSettings = () => {
 
         <div style={{ backgroundColor: 'var(--color-white)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
           <h2 style={{ marginBottom: '1.5rem', fontSize: '1.25rem', borderBottom: '1px solid var(--color-bg-light)', paddingBottom: '1rem' }}>
+            Notifications & Messagerie Email
+          </h2>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div style={{ padding: '1.25rem', backgroundColor: '#f0fdf4', borderRadius: '10px', border: '1px solid #bbf7d0' }}>
+              <div style={{ fontWeight: '600', color: '#166534', marginBottom: '0.25rem' }}>📦 Notifications des Commandes</div>
+              <p style={{ fontSize: '0.85rem', color: '#15803d', margin: '0 0 0.5rem 0' }}>
+                Toutes les nouvelles commandes passées par les clients sont notifiées instantanément à cette adresse :
+              </p>
+              <div style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '1rem', color: '#14532d', backgroundColor: 'white', padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #86efac' }}>
+                commandes@merveillesmarket.net
+              </div>
+            </div>
+
+            <div style={{ padding: '1.25rem', backgroundColor: '#eff6ff', borderRadius: '10px', border: '1px solid #bfdbfe' }}>
+              <div style={{ fontWeight: '600', color: '#1e40af', marginBottom: '0.25rem' }}>✉️ Expédition des Newsletters & Contact</div>
+              <p style={{ fontSize: '0.85rem', color: '#1d4ed8', margin: '0 0 0.5rem 0' }}>
+                Les campagnes et emails de bienvenue newsletter sont expédiés depuis cette adresse :
+              </p>
+              <div style={{ fontFamily: 'monospace', fontWeight: 'bold', fontSize: '1rem', color: '#1e3a8a', backgroundColor: 'white', padding: '0.5rem 0.75rem', borderRadius: '6px', border: '1px solid #93c5fd' }}>
+                contact@merveillesmarket.net
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ backgroundColor: 'var(--color-white)', borderRadius: '16px', padding: '2rem', boxShadow: '0 4px 15px rgba(0,0,0,0.03)' }}>
+          <h2 style={{ marginBottom: '1.5rem', fontSize: '1.25rem', borderBottom: '1px solid var(--color-bg-light)', paddingBottom: '1rem' }}>
             Communication & Affichage
           </h2>
           

@@ -2,19 +2,30 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../prismaClient.js';
+import { authLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'merveilles_secret_key_2026';
 
-router.post('/login', async (req, res) => {
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Route de connexion avec Rate Limiting strict
+router.post('/login', authLimiter, async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Identifiants invalides' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
     const user = await prisma.user.findUnique({
-      where: { email }
+      where: { email: cleanEmail }
     });
 
     if (!user) {
+      // Message d'erreur unique générique pour éviter l'énumération des utilisateurs
       return res.status(401).json({ error: 'Identifiants invalides' });
     }
 
@@ -41,12 +52,13 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur login:', error);
-    res.status(500).json({ error: 'Erreur serveur lors de la connexion', details: error.message, stack: error.stack });
+    // Erreur générique sans fuite de stack trace ou données internes
+    res.status(500).json({ error: 'Erreur lors de la connexion' });
   }
 });
 
-// Route d'inscription
-router.post('/register', async (req, res) => {
+// Route d'inscription avec Rate Limiting et validation d'entrée
+router.post('/register', authLimiter, async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
@@ -54,8 +66,18 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Email et mot de passe requis' });
     }
 
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      return res.status(400).json({ error: 'Format d\'adresse email invalide' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Le mot de passe doit comporter au moins 6 caractères' });
+    }
+
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { email: cleanEmail }
     });
 
     if (existingUser) {
@@ -66,9 +88,9 @@ router.post('/register', async (req, res) => {
 
     const user = await prisma.user.create({
       data: {
-        email,
+        email: cleanEmail,
         password: hashedPassword,
-        name: name || null,
+        name: name ? name.trim().slice(0, 100) : null,
         role: 'CLIENT'
       }
     });
@@ -90,8 +112,9 @@ router.post('/register', async (req, res) => {
     });
   } catch (error) {
     console.error('Erreur inscription:', error);
-    res.status(500).json({ error: 'Erreur serveur lors de l\'inscription', details: error.message });
+    res.status(500).json({ error: 'Erreur lors de la création du compte' });
   }
 });
 
 export default router;
+

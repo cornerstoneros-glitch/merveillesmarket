@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, ArrowRight } from 'lucide-react';
+import { subscribeNewsletter } from '../api';
 import './NewsletterPopup.css';
 
 const NewsletterPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     // Check if the user has already seen or closed the popup
@@ -26,23 +28,28 @@ const NewsletterPopup = () => {
     localStorage.setItem('newsletter_dismissed', 'true');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) return;
     
     setStatus('loading');
+    setErrorMessage('');
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await subscribeNewsletter(email);
       setStatus('success');
       localStorage.setItem('newsletter_dismissed', 'true');
       
-      // Auto close after 3 seconds on success
+      // Auto close after 3.5 seconds on success
       setTimeout(() => {
         setIsOpen(false);
-      }, 3000);
-    }, 1500);
+      }, 3500);
+    } catch (err) {
+      setStatus('error');
+      setErrorMessage(err.message || 'Une erreur est survenue lors de l\'inscription.');
+    }
   };
+
 
   if (!isOpen) return null;
 
@@ -67,9 +74,17 @@ const NewsletterPopup = () => {
             <div className="newsletter-success">
               <p>Merci pour votre inscription ! 🎉</p>
               <p className="newsletter-coupon">Votre code : <strong>BIENVENUE10</strong></p>
+              <p style={{ fontSize: '0.85rem', marginTop: '0.5rem', color: '#166534' }}>
+                Un email de bienvenue vous a été envoyé depuis contact@merveillesmarket.net
+              </p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="newsletter-form">
+              {errorMessage && (
+                <div style={{ color: '#b91c1c', fontSize: '0.85rem', marginBottom: '0.75rem', width: '100%', textAlign: 'center' }}>
+                  {errorMessage}
+                </div>
+              )}
               <input 
                 type="email" 
                 placeholder="Votre adresse email" 

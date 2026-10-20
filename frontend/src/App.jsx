@@ -24,6 +24,7 @@ import AdminOrders from './pages/admin/AdminOrders';
 import AdminProducts from './pages/admin/AdminProducts';
 import AdminSettings from './pages/admin/AdminSettings';
 import AdminCoupons from './pages/admin/AdminCoupons';
+import AdminNewsletter from './pages/admin/AdminNewsletter';
 import { CGU, CGV, MentionsLegales, Confidentialite, PolitiqueCookies } from './pages/LegalPages';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -57,6 +58,7 @@ function App() {
               <Route path="products" element={<AdminProducts />} />
               <Route path="settings" element={<AdminSettings />} />
               <Route path="coupons" element={<AdminCoupons />} />
+              <Route path="newsletter" element={<AdminNewsletter />} />
             </Route>
 
             {/* Legal Pages */}

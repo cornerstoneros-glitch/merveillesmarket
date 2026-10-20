@@ -1,6 +1,7 @@
 import express from 'express';
 import { adminAuth } from '../middleware/auth.js';
 import prisma from '../prismaClient.js';
+import { sendOrderNotificationToAdmin, sendOrderConfirmationToCustomer } from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -13,21 +14,61 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Le panier est vide' });
     }
 
-    // Utilisation d'une transaction pour vérifier et mettre à jour le stock
+    // 1. Validation de base des entrées
+    if (!guestName || !guestPhone || !guestAddress) {
+      return res.status(400).json({ error: 'Nom, téléphone et adresse de livraison requis.' });
+    }
+
+    // Utilisation d'une transaction pour vérifier les prix réels en BDD et mettre à jour le stock
     const order = await prisma.$transaction(async (tx) => {
+      let subtotal = 0;
+      const verifiedItems = [];
+
+      // 1. Vérifier chaque article avec le prix authentique de la base de données
+      for (const item of items) {
+        const qty = parseInt(item.quantity, 10);
+        if (isNaN(qty) || qty <= 0) {
+          throw new Error('Quantité invalide pour un article.');
+        }
+
+        const product = await tx.product.findUnique({
+          where: { id: parseInt(item.id, 10) }
+        });
+        
+        if (!product) {
+          throw new Error(`Produit introuvable (ID: ${item.id})`);
+        }
+        
+        if (product.stock < qty) {
+          throw new Error(`Stock insuffisant pour ${product.name} (disponible : ${product.stock})`);
+        }
+        
+        // Décrémenter le stock
+        await tx.product.update({
+          where: { id: product.id },
+          data: { stock: product.stock - qty }
+        });
+
+        subtotal += product.price * qty;
+        verifiedItems.push({
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          image: product.image,
+          quantity: qty
+        });
+      }
+
       let finalDiscountAmount = 0;
       let appliedCouponCode = null;
 
       // Vérification du coupon côté serveur
       if (couponCode) {
         const coupon = await tx.coupon.findUnique({
-          where: { code: couponCode.toUpperCase() }
+          where: { code: couponCode.trim().toUpperCase() }
         });
 
         if (coupon && coupon.isActive && (coupon.usageLimit === null || coupon.usageCount < coupon.usageLimit)) {
-          // Calculer le sous-total des articles
-          const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-          
           if (coupon.discountType === 'PERCENTAGE') {
             finalDiscountAmount = subtotal * (coupon.discountValue / 100);
           } else if (coupon.discountType === 'FIXED') {
@@ -48,48 +89,37 @@ router.post('/', async (req, res) => {
         }
       }
 
-      // 1. Vérifier le stock pour chaque article
-      for (const item of items) {
-        const product = await tx.product.findUnique({
-          where: { id: item.id }
-        });
-        
-        if (!product) {
-          throw new Error(`Produit introuvable : ${item.name}`);
-        }
-        
-        if (product.stock < item.quantity) {
-          throw new Error(`Stock insuffisant pour ${product.name} (disponible : ${product.stock})`);
-        }
-        
-        // 2. Décrémenter le stock
-        await tx.product.update({
-          where: { id: item.id },
-          data: { stock: product.stock - item.quantity }
-        });
-      }
+      const validShippingFee = Math.max(0, parseFloat(shippingFee) || 0);
+      const computedTotal = subtotal + validShippingFee - finalDiscountAmount;
 
-      // Calculer le total final (pour s'assurer qu'il correspond)
-      const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-      const computedTotal = subtotal + (shippingFee || 0) - finalDiscountAmount;
-
-      // 3. Créer la commande
+      // 3. Créer la commande avec données vérifiées côté serveur
       return await tx.order.create({
         data: {
-          items: JSON.stringify(items),
+          items: JSON.stringify(verifiedItems),
           total: computedTotal,
-          shippingFee: shippingFee || 0,
+          shippingFee: validShippingFee,
           couponCode: appliedCouponCode,
           discountAmount: finalDiscountAmount,
           userId: userId ? parseInt(userId) : null,
-          guestName,
-          guestEmail,
-          guestPhone,
-          guestAddress,
+          guestName: guestName.trim().slice(0, 100),
+          guestEmail: guestEmail ? guestEmail.trim().toLowerCase().slice(0, 100) : null,
+          guestPhone: guestPhone.trim().slice(0, 30),
+          guestAddress: guestAddress.trim().slice(0, 300),
           status: 'PENDING'
         }
       });
     });
+
+    // Envoi asynchrone des emails (ne bloque pas et ne fait pas échouer la réponse client)
+    sendOrderNotificationToAdmin(order).catch(err => {
+      console.error('Erreur lors de la notification admin de la commande:', err);
+    });
+
+    if (order.guestEmail) {
+      sendOrderConfirmationToCustomer(order).catch(err => {
+        console.error('Erreur lors de l\'envoi de confirmation de commande au client:', err);
+      });
+    }
 
     res.status(201).json(order);
   } catch (error) {

@@ -73,6 +73,17 @@ async function main() {
   const hashedPassword = await bcrypt.hash('admin123', 10);
   
   await prisma.user.upsert({
+    where: { email: 'admin@merveillesmarket.net' },
+    update: {},
+    create: {
+      email: 'admin@merveillesmarket.net',
+      name: 'Administrateur',
+      password: hashedPassword,
+      role: 'ADMIN'
+    }
+  });
+
+  await prisma.user.upsert({
     where: { email: 'admin@merveillestrademarket.com' },
     update: {},
     create: {

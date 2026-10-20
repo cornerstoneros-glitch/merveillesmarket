@@ -49,7 +49,7 @@ const Footer = () => {
           <h4>Contact</h4>
           <ul>
             <li><Phone size={16} /> +225 07 01 92 95 98</li>
-            <li><Mail size={16} /> contact@merveillestrademarket.com</li>
+            <li><Mail size={16} /> <a href="mailto:contact@merveillesmarket.net" style={{ color: 'inherit', textDecoration: 'none' }}>contact@merveillesmarket.net</a></li>
             <li><MapPin size={16} /> Abidjan, Côte d'Ivoire</li>
           </ul>
         </div>
