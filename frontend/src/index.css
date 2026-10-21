@@ -126,6 +126,7 @@ ul {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  width: 100%;
 }
 
 .section {
@@ -147,14 +148,31 @@ ul {
   align-items: start;
 }
 
+/* Tableaux avec défilement horizontal sur mobile */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Images responsives par défaut */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
 @media (max-width: 992px) {
   .checkout-layout {
-    grid-template-columns: 1fr 300px;
+    grid-template-columns: 1fr 320px;
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+
   .cart-layout {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -166,11 +184,34 @@ ul {
   }
   
   .section {
-    padding: 2rem 0;
+    padding: 2.5rem 0;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
   }
   
-  /* Masquer le texte du bouton Compte/Connexion sur très petits écrans */
   .d-md-block {
     display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0 0.85rem;
+  }
+
+  .section {
+    padding: 2rem 0;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    width: 100%;
   }
 }

@@ -69,16 +69,33 @@ const Header = () => {
         
         <div className="header-actions">
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <Link to={user.role === 'ADMIN' ? "/admin" : "/account"} className="action-btn" aria-label="Compte" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text)' }} onClick={closeMobileMenu}>
-                <User size={24} />
-                <span style={{ fontSize: '0.9rem', fontWeight: '500', display: 'none' }} className="d-md-block">Mon Compte</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <Link 
+                to={user.role === 'ADMIN' ? "/admin" : "/account"} 
+                className="action-btn user-logged-btn" 
+                aria-label="Mon compte" 
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '0.5rem', 
+                  color: 'var(--color-green-dark)',
+                  backgroundColor: 'rgba(20, 60, 26, 0.08)',
+                  padding: '0.4rem 0.85rem',
+                  borderRadius: '20px',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  fontSize: '0.9rem'
+                }} 
+                onClick={closeMobileMenu}
+              >
+                <User size={18} />
+                <span>{user.role === 'ADMIN' ? 'Dashboard Admin' : (user.name ? user.name.split(' ')[0] : 'Mon Compte')}</span>
               </Link>
             </div>
           ) : (
             <Link to="/login" className="action-btn" aria-label="Connexion" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--color-text)' }} onClick={closeMobileMenu}>
               <User size={24} />
-              <span style={{ fontSize: '0.9rem', fontWeight: '500', display: 'none' }} className="d-md-block">Connexion</span>
+              <span style={{ fontSize: '0.9rem', fontWeight: '500' }}>Connexion</span>
             </Link>
           )}
           
@@ -133,6 +150,46 @@ const Header = () => {
         </form>
 
         <div className="mobile-nav-links">
+          {user ? (
+            <div style={{ padding: '0.75rem 1.5rem', backgroundColor: 'rgba(20, 60, 26, 0.05)', borderBottom: '1px solid var(--color-border)' }}>
+              <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Connecté en tant que :</div>
+              <div style={{ fontWeight: '700', color: 'var(--color-green-dark)', marginBottom: '0.5rem' }}>{user.name || user.email}</div>
+              <Link 
+                to={user.role === 'ADMIN' ? "/admin" : "/account"} 
+                onClick={closeMobileMenu}
+                style={{ 
+                  display: 'inline-block',
+                  padding: '0.5rem 1rem', 
+                  backgroundColor: 'var(--color-green-dark)', 
+                  color: 'white', 
+                  borderRadius: '6px',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: '600',
+                  marginRight: '0.5rem'
+                }}
+              >
+                {user.role === 'ADMIN' ? 'Tableau de bord Admin' : 'Mon Compte & Commandes'}
+              </Link>
+              <button 
+                onClick={() => { logout(); closeMobileMenu(); }}
+                style={{
+                  background: 'none',
+                  border: '1px solid var(--color-border)',
+                  padding: '0.45rem 0.75rem',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontSize: '0.85rem'
+                }}
+              >
+                Déconnexion
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" onClick={closeMobileMenu} style={{ fontWeight: '600', color: 'var(--color-green-dark)' }}>
+              Se connecter / Créer un compte
+            </Link>
+          )}
           <Link to="/" onClick={closeMobileMenu}>Accueil</Link>
           <Link to="/abbeys" onClick={closeMobileMenu}>Boutique Santé (Abbeys)</Link>
           <Link to="/josy" onClick={closeMobileMenu}>Boutique Maison (Josy)</Link>

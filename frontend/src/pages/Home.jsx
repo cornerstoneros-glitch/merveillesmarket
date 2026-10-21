@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Truck, Clock } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Truck, Clock, User, LayoutDashboard } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { fetchProducts } from '../api';
+import { AuthContext } from '../context/AuthContext';
 import './Home.css';
 
 const Home = () => {
+  const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -53,6 +55,47 @@ const Home = () => {
           <div className="hero-overlay"></div>
         </div>
         <div className="container hero-container" style={{ position: 'relative', zIndex: 2 }}>
+          {user && (
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              backgroundColor: 'rgba(255, 255, 255, 0.15)',
+              backdropFilter: 'blur(8px)',
+              padding: '0.5rem 1.25rem',
+              borderRadius: '30px',
+              border: '1px solid rgba(255, 255, 255, 0.25)',
+              marginBottom: '1.5rem',
+              color: '#ffffff'
+            }}>
+              <span>Bonjour, <strong>{user.name || user.email}</strong> !</span>
+              <Link 
+                to={user.role === 'ADMIN' ? "/admin" : "/account"}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.35rem',
+                  backgroundColor: 'var(--color-gold)',
+                  color: 'var(--color-ink)',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: '20px',
+                  fontWeight: '700',
+                  fontSize: '0.85rem',
+                  textDecoration: 'none'
+                }}
+              >
+                {user.role === 'ADMIN' ? (
+                  <>
+                    <LayoutDashboard size={15} /> Dashboard Admin
+                  </>
+                ) : (
+                  <>
+                    <User size={15} /> Mon Compte
+                  </>
+                )}
+              </Link>
+            </div>
+          )}
           <div className="hero-content">
             <h1>Naturel pour votre santé,<br />qualité pour votre quotidien</h1>
             <p>Découvrez nos deux univers pensés pour vous.</p>

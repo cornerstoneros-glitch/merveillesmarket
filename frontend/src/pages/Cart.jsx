@@ -54,23 +54,23 @@ const Cart = () => {
       <div className="cart-layout">
         <div style={{ backgroundColor: 'var(--color-white)', borderRadius: '16px', padding: '2rem' }}>
           {cartItems.map((item) => (
-            <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', paddingBottom: '1.5rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-bg-light)' }}>
-              <img src={item.image} alt={item.name} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
-              <div style={{ flex: 1 }}>
-                <h3 style={{ marginBottom: '0.5rem' }}>{item.name}</h3>
-                <p style={{ color: 'var(--color-text-muted)', marginBottom: '0.5rem' }}>{item.category}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1.25rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--color-bg-light)', flexWrap: 'wrap' }}>
+              <img src={item.image} alt={item.name} style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }} />
+              <div style={{ flex: '1 1 200px', minWidth: '180px' }}>
+                <h3 style={{ marginBottom: '0.25rem', fontSize: '1.05rem' }}>{item.name}</h3>
+                <p style={{ color: 'var(--color-text-muted)', marginBottom: '0.5rem', fontSize: '0.85rem' }}>{item.category}</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid var(--color-bg-light)', borderRadius: '8px', padding: '0.25rem' }}>
                     <button onClick={() => updateQuantity(item.id, item.quantity - 1)} style={{ padding: '0.25rem 0.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>-</button>
                     <span>{item.quantity}</span>
                     <button disabled={item.quantity >= item.stock} onClick={() => updateQuantity(item.id, item.quantity + 1)} style={{ padding: '0.25rem 0.5rem', background: 'none', border: 'none', cursor: item.quantity >= item.stock ? 'not-allowed' : 'pointer', opacity: item.quantity >= item.stock ? 0.5 : 1 }}>+</button>
                   </div>
-                  <button onClick={() => removeFromCart(item.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-                    <Trash2 size={16} /> Supprimer
+                  <button onClick={() => removeFromCart(item.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.85rem' }}>
+                    <Trash2 size={15} /> Supprimer
                   </button>
                 </div>
               </div>
-              <div style={{ fontWeight: '600', fontSize: '1.1rem' }}>
+              <div style={{ fontWeight: '700', fontSize: '1.1rem', marginLeft: 'auto' }}>
                 {formatPrice(item.price * item.quantity)}
               </div>
             </div>
